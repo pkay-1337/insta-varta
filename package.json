@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/pkay-1337/insta-varta/issues"
   },
-  "homepage": "https://github.com/pkay-1337/insta-varta#readme"
+  "homepage": "https://github.com/pkay-1337/insta-varta#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
 }
