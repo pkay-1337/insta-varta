@@ -7,8 +7,8 @@
     <script>
         function what(x){
             let a = document.getElementById("magic");
-            let reg = "PGgxPkhBSEE8L2gxPg==";
-            let log = "PGgxPkhFSEU8L2gxPg==";
+            let reg = "PGZvcm0gYWN0aW9uPSIvcmVnaXN0ZXIiIG1ldGhvZD0icG9zdCI+CgkJCQk8bGFiZWwgZm9yPSJ1c2VyTmFtZSI+IHVzZXIgbmFtZSogPC9sYWJlbD4KCQkJCTxicj4KICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBuYW1lPSJ1c2VyTmFtZSIgaWQ9InVzZXJOYW1lIj4KCQkJCTxicj4KICAgICAgICAgICAgICAgIDxsYWJlbCBmb3I9ImVtYWlsIj4gRW1haWwqIDwvbGFiZWw+CgkJCQk8YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0iZW1haWwiIG5hbWU9ImVtYWlsIiBpZD0iZW1haWwiPgoJCQkJPGJyPgogICAgICAgICAgICAgICAgPGxhYmVsIGZvcj0icGFzcyI+IFBhc3N3b3JkKiA8L2xhYmVsPgoJCQkJPGJyPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InBhc3N3b3JkIiBuYW1lPSJwYXNzd29yZCIgaWQ9InBhc3MiPgoJCQkJPGJyPgogICAgICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPlJFR0lTVEVSPC9idXR0b24+CiAgICAgICAgICAgIDwvZm9ybT4="
+            let log = "PGZvcm0gYWN0aW9uPSIvbG9naW4iIG1ldGhvZD0icG9zdCI+PGJyPgogICAgICAgICAgICAgICAgPGxhYmVsIGZvcj0iZW1haWwiPiBFbWFpbCogPC9sYWJlbD48YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0iZW1haWwiIG5hbWU9ImVtYWlsIiBpZD0iZW1haWwiPjxicj4KICAgICAgICAgICAgICAgIDxsYWJlbCBmb3I9InBhc3MiPiBQYXNzd29yZCogPC9sYWJlbD48YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0icGFzc3dvcmQiIG5hbWU9InBhc3N3b3JkIiBpZD0icGFzcyI+PGJyPgogICAgICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPkxPR0lOPC9idXR0b24+CiAgICAgICAgICAgIDwvZm9ybT4=";
             if(x == 0){
                 a.innerHTML = atob(reg);
             }else{
@@ -26,6 +26,13 @@
         <button onclick="what(1)">Login</button>
         </div>
         <div id="magic">
+            <form action="/login" method="post">
+                <label for="email"> Email* </label>
+                <input type="email" name="email" id="email">
+                <label for="pass"> Password* </label>
+                <input type="password" name="password" id="pass">
+                <button type="submit">LOGIN</button>
+            </form>
         </div>
     </div>
     <script>what(0)</script>
