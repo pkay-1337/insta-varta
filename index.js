@@ -1,11 +1,10 @@
 var express = require('express')
 const path = require('path');
-
 const mariadb = require('mariadb');
 
 
 const pool = mariadb.createPool({
-  host: 'localhost',
+  host: '127.0.0.1',
   user: 'pk',
   password: 'pk',
   database: 'insta',
@@ -21,12 +20,22 @@ const port = 8080
 app.use(express.static('public'))
 
 app.get('/login', (req, res) => {
-    console.log(path.join(path.dirname(require.main.filename)))
     res.sendFile(path.join(path.dirname(require.main.filename),"public/html/login.html"))
 })
-app.post('/login', (req, res) => {
+app.post('/login', async(req, res) => {
   console.log(req);
-  res.redirect('/login');
+  let conn;
+    try {
+        conn = await pool.getConnection();
+        const query = `INSERT INTO users (username,email, password) VALUES ('${req.body.userName}','${req.body.email}','${req.body.password}')`;        const result = await conn.query(query);
+        res.status(201).send(`Data inserted with ID: ${result.insertId}`);
+        console.log("registered");
+    } catch (err) {
+        res.status(500).send(`Error: ${err.message}`);
+    } finally {
+        if (conn) conn.end();
+    }
+  //res.redirect('/login');
 })
 
 app.listen(port, () => {
