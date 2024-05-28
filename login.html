@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script>
+        function what(x){
+            let a = document.getElementById("magic");
+            let reg = "PGgxPkhBSEE8L2gxPg==";
+            let log = "PGgxPkhFSEU8L2gxPg==";
+            if(x == 0){
+                a.innerHTML = atob(reg);
+            }else{
+
+                a.innerHTML = atob(log);
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>LOGIN</h1>
+    <div>
+        <div>
+        <button onclick="what(0)">Register</button>
+        <button onclick="what(1)">Login</button>
+        </div>
+        <div id="magic">
+        </div>
+    </div>
+    <script>what(0)</script>
+</body>
+</html>
