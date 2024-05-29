@@ -1,6 +1,10 @@
 var express = require('express')
 const path = require('path');
 const mariadb = require('mariadb');
+const WebSocket = require('ws');
+const http = require('http');
+
+
 
 
 const pool = mariadb.createPool({
@@ -11,11 +15,40 @@ const pool = mariadb.createPool({
   connectionLimit: 20
 });
 
-var app = express()
+var app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const port = 8080
+
+
+const server = http.createServer(app);
+
+// Initialize a WebSocket server instance
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws) => {
+    console.log('New client connected');
+
+    // Message event handler
+    ws.on('message', (message) => {
+        console.log(`Received: ${message}`);
+        ws.send(`Echo: ${message}`);
+    });
+
+    // Close event handler
+    ws.on('close', () => {
+        console.log('Client disconnected');
+    });
+});
+
+
+
+
+
+
+
+
 
 app.use(express.static('public'))
 
@@ -38,6 +71,6 @@ app.post('/login', async(req, res) => {
   //res.redirect('/login');
 })
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
