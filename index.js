@@ -3,8 +3,6 @@ const path = require('path');
 const mariadb = require('mariadb');
 const WebSocket = require('ws');
 const http = require('http');
-const fs = require('fs');
-
 
 
 
@@ -23,25 +21,15 @@ app.use(express.urlencoded({ extended: true }));
 
 const port = 8080
 
+
 const server = http.createServer(app);
 
-function s(filePath) {
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-        console.error('Error reading the file:', err);
-        return;
-    }
-    ws.send(data);
-  });
-}
-
-
-// WEB SOCKETTTTTTTTTTTT
 // Initialize a WebSocket server instance
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (ws) => {
     console.log('New client connected');
+
     // Message event handler
     ws.on('message', (message) => {
         console.log(`Received: ${message}`);
