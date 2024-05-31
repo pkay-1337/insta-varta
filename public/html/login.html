@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <script>
+        async function con(form){
+            x = document.getElementById("userName").value;
+            console.log(x);
+            var ws = new WebSocket(`ws://localhost:8080/${x}`);
+            ws.onopen = () => {
+                console.log('Connected to the server');
+            };
+            ws.onclose = () => {
+                console.log('Disconnected from the server');
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket Error:', error);
+            };
+            ws.onmessage = (event) => {
+                if(event.data == "Registered"){
+                    alert("Registered");
+                    what(1);
+                }
+            };
+            if(form == "reg"){
+                data = {
+                    "username" : document.getElementById("userName").value,
+                    "email" : document.getElementById("email").value,
+                    "password" : document.getElementById("password").value
+                }
+                fetch("/register",{method : "POST",headers: {"Content-Type": "application/json"}, body : JSON.stringify(data)})
+            }
+        }
+    </script>
+    <script>
         let reg = "PGZvcm0gYWN0aW9uPSIvcmVnaXN0ZXIiIG1ldGhvZD0icG9zdCI+PGJyPgoJCQkJCgkJCQk8bGFiZWwgZm9yPSJ1c2VyTmFtZSI+IHVzZXIgbmFtZSogPC9sYWJlbD48YnI+CgkJCQk8aW5wdXQgdHlwZT0idGV4dCIgbmFtZT0idXNlck5hbWUiIGlkPSJ1c2VyTmFtZSI+PGJyPgogICAgICAgICAgICAgICAgPGxhYmVsIGZvcj0iZW1haWwiPiBFbWFpbCogPC9sYWJlbD48YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0iZW1haWwiIG5hbWU9ImVtYWlsIiBpZD0iZW1haWwiPgoJCQkJPGJyPgogICAgICAgICAgICAgICAgPGxhYmVsIGZvcj0icGFzcyI+IFBhc3N3b3JkKiA8L2xhYmVsPgoJCQkJPGJyPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InBhc3N3b3JkIiBuYW1lPSJwYXNzd29yZCIgaWQ9InBhc3MiPgoJCQkJPGJyPgogICAgICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPlJFR0lTVEVSPC9idXR0b24+CiAgICAgICAgICAgIDwvZm9ybT4=";
         let log = "PGZvcm0gYWN0aW9uPSIvbG9naW4iIG1ldGhvZD0icG9zdCI+PGJyPgogICAgICAgICAgICAgICAgPGxhYmVsIGZvcj0iZW1haWwiPiBFbWFpbCogPC9sYWJlbD48YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0iZW1haWwiIG5hbWU9ImVtYWlsIiBpZD0iZW1haWwiPjxicj4KICAgICAgICAgICAgICAgIDxsYWJlbCBmb3I9InBhc3MiPiBQYXNzd29yZCogPC9sYWJlbD48YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0icGFzc3dvcmQiIG5hbWU9InBhc3N3b3JkIiBpZD0icGFzcyI+PGJyPgogICAgICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPkxPR0lOPC9idXR0b24+CiAgICAgICAgICAgIDwvZm9ybT4=";
         function what(x){
@@ -27,7 +58,7 @@
         <button onclick="what(1)">Login</button>
         </div>
         <div id="magic">
-            <form action="/login" method="post"><br>
+            <form id="myForm"><br>
 				<label for="userName"> user name* </label><br>
 				<input type="text" name="userName" id="userName"><br>
                 <label for="email"> Email* </label><br>
@@ -35,11 +66,15 @@
 				<br>
                 <label for="pass"> Password* </label>
 				<br>
-                <input type="password" name="password" id="pass">
+                <input type="password" name="password" id="password">
 				<br>
-                <button type="submit">REGISTER</button>
+                <button type="submit" onclick="con('reg')">REGISTER</button>
             </form>
         </div>
-    </div>
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        });
+    </script>
 </body>
 </html>
