@@ -4,8 +4,8 @@ const mariadb = require("mariadb");
 const WebSocket = require("ws");
 const http = require("http");
 const fs = require("fs");
-const url = require('url');
-
+const url = require("url");
+const crypto = require("crypto");
 
 const pool = mariadb.createPool({
   host: "127.0.0.1",
@@ -14,7 +14,7 @@ const pool = mariadb.createPool({
   database: "insta",
   connectionLimit: 20,
 });
-
+var conn = pool.getConnection();
 var app = express();
 app.use(express.json());
 app.use(express.static("public"));
@@ -37,7 +37,7 @@ function s(filePath) {
   });
 }
 socs = {};
-wss.on("connection", (ws,request) => {
+wss.on("connection", (ws, request) => {
   console.log("New client connected");
   const parsedUrl = url.parse(request.url, true);
   let path = parsedUrl.pathname;
@@ -62,29 +62,82 @@ wss.on("connection", (ws,request) => {
 app.get("/", (req, res) => {
   //res.sendFile(path.join(path.dirname(require.main.filename),"public/html/login.html"))
   if (!req.headers.cookie) {
-    res.sendFile(path.join(path.dirname(require.main.filename), "public/html/login.html"));
+    res.sendFile(
+      path.join(path.dirname(require.main.filename), "public/html/login.html")
+    );
     //s(path.join(path.dirname(require.main.filename), "public/html/login.html"));
   }
   //console.log(req.headers);
 });
 app.post("/register", async (req, res) => {
   //console.log(req);
-  let conn;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   try {
+    let ok = 1;
     conn = await pool.getConnection();
     console.log(req.body);
-    n = req.body.username;
-    const query = `INSERT INTO users (username,email, password) VALUES ('${req.body.username}','${req.body.email}','${req.body.password}')`;
-    const result = await conn.query(query);
-    //res.status(200).send();
-    //res.status(201).send(`Data inserted with ID: ${result.insertId}`);
-    req.destroy();
-    socs[n].send("Registered");
-    console.log("registered");
+    n = encodeURIComponent(req.body.username.trim());
+    if (n.includes("%20")) {
+      socs[n].send(
+        JSON.stringify({ error: "username must not contain space" })
+      );
+      socs[n].close();
+      delete socs[n];
+      ok = 0;
+    }
+    let r= await conn.query(`select username from users where username = '${n}' `);
+    if(r.length > 0){
+      socs[n].send(
+        JSON.stringify({ error: "username already taken" })
+      );
+      socs[n].close();
+      delete socs[n];
+      ok = 0;
+    }
+    delete r;
+    e = req.body.email.trim();
+    r= await conn.query(`select email from users where email = '${e}' `);
+    if(r.length > 0){
+      socs[n].send(
+        JSON.stringify({ error: "An user with this email already exist" })
+      );
+      socs[n].close();
+      delete socs[n];
+      ok = 0;
+    }
+    delete r;
+    if(!emailPattern.test(e)) {
+      socs[n].send(
+        JSON.stringify({ error: "invalid email" })
+      );
+      socs[n].close();
+      delete socs[n];
+      ok = 0;
+    }
+    if(req.body.password.length < 8){
+      socs[n].send(
+        JSON.stringify({ error: "password length must be at least 8" })
+      );
+      socs[n].close();
+      delete socs[n];
+      ok = 0;
+    }
+    p = crypto.createHash('sha256').update(req.body.password).digest("hex");
+    console.log(ok)
+    if(ok == 1){
+      const query = `INSERT INTO users (username,email, password) VALUES ('${n}','${e}','${p}')`;
+      const result = await conn.query(query);
+      res.status(200).send('ok');
+      //res.status(201).send(`Data inserted with ID: ${result.insertId}`);
+      req.destroy();
+      socs[n].send("Registered");
+      console.log("registered");
+    }
   } catch (err) {
     //res.status(500).send(`Error: ${err.message}`);
+    console.log(err);
   } finally {
-    if (conn) conn.end();
+    console.log(".....")
   }
   //res.redirect('/login');
 });
