@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <script>
+        var ws;
         async function con(form){
             x = document.getElementById("userName").value;
             console.log(x);
-            var ws = new WebSocket(`ws://localhost:8080/${x}`);
+            ws = new WebSocket(`ws://localhost:8080/${x}`);
             ws.onopen = () => {
                 console.log('Connected to the server');
             };
@@ -23,6 +24,8 @@
                 if(event.data == "Registered"){
                     alert("Registered");
                     what(1);
+                }else{
+                    console.log("got message : " + event.data)
                 }
             };
             if(form == "reg"){
