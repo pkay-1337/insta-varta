@@ -1,76 +1,94 @@
-var express = require('express')
-const path = require('path');
-const mariadb = require('mariadb');
-const WebSocket = require('ws');
-const http = require('http');
-
-
+var express = require("express");
+const path = require("path");
+const mariadb = require("mariadb");
+const WebSocket = require("ws");
+const http = require("http");
+const fs = require("fs");
+const url = require('url');
 
 
 const pool = mariadb.createPool({
-  host: '127.0.0.1',
-  user: 'pk',
-  password: 'pk',
-  database: 'insta',
-  connectionLimit: 20
+  host: "127.0.0.1",
+  user: "pk",
+  password: "pk",
+  database: "insta",
+  connectionLimit: 20,
 });
 
 var app = express();
 app.use(express.json());
+app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 
-const port = 8080
-
+const port = 8080;
 
 const server = http.createServer(app);
 
+// WEB SOCKETTTTTTTTTTTT
 // Initialize a WebSocket server instance
 const wss = new WebSocket.Server({ server });
+function s(filePath) {
+  fs.readFile(filePath, "utf8", (err, data) => {
+    if (err) {
+      console.error("Error reading the file:", err);
+      return;
+    }
+    ws.send(data);
+  });
+}
+socs = {};
+wss.on("connection", (ws,request) => {
+  console.log("New client connected");
+  const parsedUrl = url.parse(request.url, true);
+  let path = parsedUrl.pathname;
+  path = path.slice(1);
+  console.log(path);
+  // Message event handler
+  socs[path] = ws;
+  ws.on("message", (message) => {
+    const parsedUrl = url.parse(request.url, true);
+    let path = parsedUrl.pathname;
+    path = path.slice(1);
+    console.log(`Received from ${path} : ${message}`);
+    socs[path].send(`Echo: ${message}`);
+  });
 
-wss.on('connection', (ws) => {
-    console.log('New client connected');
-
-    // Message event handler
-    ws.on('message', (message) => {
-        console.log(`Received: ${message}`);
-        ws.send(`Echo: ${message}`);
-    });
-
-    // Close event handler
-    ws.on('close', () => {
-        console.log('Client disconnected');
-    });
+  // Close event handler
+  ws.on("close", () => {
+    console.log("Client disconnected");
+  });
 });
 
-
-
-
-
-
-
-
-
-app.use(express.static('public'))
-
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(path.dirname(require.main.filename),"public/html/login.html"))
-})
-app.post('/login', async(req, res) => {
-  console.log(req);
+app.get("/", (req, res) => {
+  //res.sendFile(path.join(path.dirname(require.main.filename),"public/html/login.html"))
+  if (!req.headers.cookie) {
+    res.sendFile(path.join(path.dirname(require.main.filename), "public/html/login.html"));
+    //s(path.join(path.dirname(require.main.filename), "public/html/login.html"));
+  }
+  //console.log(req.headers);
+});
+app.post("/register", async (req, res) => {
+  //console.log(req);
   let conn;
-    try {
-        conn = await pool.getConnection();
-        const query = `INSERT INTO users (username,email, password) VALUES ('${req.body.userName}','${req.body.email}','${req.body.password}')`;        const result = await conn.query(query);
-        res.status(201).send(`Data inserted with ID: ${result.insertId}`);
-        console.log("registered");
-    } catch (err) {
-        res.status(500).send(`Error: ${err.message}`);
-    } finally {
-        if (conn) conn.end();
-    }
+  try {
+    conn = await pool.getConnection();
+    console.log(req.body);
+    n = req.body.username;
+    const query = `INSERT INTO users (username,email, password) VALUES ('${req.body.username}','${req.body.email}','${req.body.password}')`;
+    const result = await conn.query(query);
+    //res.status(200).send();
+    //res.status(201).send(`Data inserted with ID: ${result.insertId}`);
+    req.destroy();
+    socs[n].send("Registered");
+    console.log("registered");
+  } catch (err) {
+    //res.status(500).send(`Error: ${err.message}`);
+  } finally {
+    if (conn) conn.end();
+  }
   //res.redirect('/login');
-})
+});
 
 server.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  console.log(`Example app listening on port ${port}`);
+});
