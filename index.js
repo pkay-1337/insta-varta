@@ -1,9 +1,6 @@
 const path = require("path");
-
 const reg = require('./js/register');
-
 const con = require("./js/db");
-
 const {app, server} = require("./js/ws");
 conn = con.conn;
 
