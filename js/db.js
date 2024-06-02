@@ -15,4 +15,4 @@ async function getConnection() {
   }
   return connection;
 }
-module.exports = { getConnection};
+module.exports = { getConnection };
