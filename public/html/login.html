@@ -38,19 +38,31 @@
                 }
                 fetch("/register",{method : "POST",headers: {"Content-Type": "application/json"}, body : JSON.stringify(data)})
             }
+            if(form == "log"){
+                data = {
+                    "username" : document.getElementById("userName").value,
+                    "password" : document.getElementById("password").value
+                }
+                fetch("/login",{method : "POST",headers: {"Content-Type": "application/json"}, body : JSON.stringify(data)})
+            }
         }
     </script>
     <link rel="stylesheet" href="css/login.css">
     <script>
-        let reg = "PGZvcm0gYWN0aW9uPSIvcmVnaXN0ZXIiIG1ldGhvZD0icG9zdCI+PGJyPgoJCQkJCgkJCQk8bGFiZWwgZm9yPSJ1c2VyTmFtZSI+IHVzZXIgbmFtZSogPC9sYWJlbD48YnI+CgkJCQk8aW5wdXQgdHlwZT0idGV4dCIgbmFtZT0idXNlck5hbWUiIGlkPSJ1c2VyTmFtZSI+PGJyPgogICAgICAgICAgICAgICAgPGxhYmVsIGZvcj0iZW1haWwiPiBFbWFpbCogPC9sYWJlbD48YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0iZW1haWwiIG5hbWU9ImVtYWlsIiBpZD0iZW1haWwiPgoJCQkJPGJyPgogICAgICAgICAgICAgICAgPGxhYmVsIGZvcj0icGFzcyI+IFBhc3N3b3JkKiA8L2xhYmVsPgoJCQkJPGJyPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InBhc3N3b3JkIiBuYW1lPSJwYXNzd29yZCIgaWQ9InBhc3MiPgoJCQkJPGJyPgogICAgICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPlJFR0lTVEVSPC9idXR0b24+CiAgICAgICAgICAgIDwvZm9ybT4=";
+        let reg = "ICAgICAgICAgICAgPGZvcm0gaWQ9Im15Rm9ybSI+PGJyPgoJCQkJPGxhYmVsIGZvcj0idXNlck5hbWUiPiB1c2VyIG5hbWUqIDwvbGFiZWw+PGJyPgoJCQkJPGlucHV0IHR5cGU9InRleHQiIG5hbWU9InVzZXJOYW1lIiBpZD0idXNlck5hbWUiPjxicj4KICAgICAgICAgICAgICAgIDxsYWJlbCBmb3I9ImVtYWlsIj4gRW1haWwqIDwvbGFiZWw+PGJyPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9ImVtYWlsIiBuYW1lPSJlbWFpbCIgaWQ9ImVtYWlsIj4KCQkJCTxicj4KICAgICAgICAgICAgICAgIDxsYWJlbCBmb3I9InBhc3MiPiBQYXNzd29yZCogPC9sYWJlbD4KCQkJCTxicj4KICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJwYXNzd29yZCIgbmFtZT0icGFzc3dvcmQiIGlkPSJwYXNzd29yZCI+CgkJCQk8YnI+CiAgICAgICAgICAgICAgICA8YnV0dG9uIHR5cGU9InN1Ym1pdCIgb25jbGljaz0iY29uKCdyZWcnKSI+UkVHSVNURVI8L2J1dHRvbj4KICAgICAgICAgICAgPC9mb3JtPg==";
         let log = "PGZvcm0gYWN0aW9uPSIvbG9naW4iIG1ldGhvZD0icG9zdCI+PGJyPgogICAgICAgICAgICAgICAgPGxhYmVsIGZvcj0iZW1haWwiPiBFbWFpbCogPC9sYWJlbD48YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0iZW1haWwiIG5hbWU9ImVtYWlsIiBpZD0iZW1haWwiPjxicj4KICAgICAgICAgICAgICAgIDxsYWJlbCBmb3I9InBhc3MiPiBQYXNzd29yZCogPC9sYWJlbD48YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0icGFzc3dvcmQiIG5hbWU9InBhc3N3b3JkIiBpZD0icGFzcyI+PGJyPgogICAgICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPkxPR0lOPC9idXR0b24+CiAgICAgICAgICAgIDwvZm9ybT4=";
         function what(x){
             let a = document.getElementById("magic");
             if(x == 0){
                 a.innerHTML = atob(reg);
+                const script = document.createElement('script');
+                script.textContent = "document.getElementById('myForm').addEventListener('submit', function(event) {event.preventDefault();})";
+                a.appendChild(script);
             }else{
-
                 a.innerHTML = atob(log);
+                const script = document.createElement('script');
+                script.textContent = "document.getElementById('myForm').addEventListener('submit', function(event) {event.preventDefault();})";
+                a.appendChild(script);
             }
         };
     </script>
@@ -62,22 +74,20 @@
         </div>
         <div id="magic">
             <form id="myForm"><br>
-				<label for="userName"> user name* </label><br>
+				<label for="userName"> email / username* </label><br>
 				<input type="text" name="userName" id="userName"><br>
-                <label for="email"> Email* </label><br>
-                <input type="email" name="email" id="email">
-				<br>
                 <label for="pass"> Password* </label>
 				<br>
                 <input type="password" name="password" id="password">
 				<br>
-                <button type="submit" onclick="con('reg')">REGISTER</button>
+                <button type="submit" onclick="con('log')">REGISTER</button>
             </form>
+            <script>
+                document.getElementById('myForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                });
+            </script>
         </div>
-    <script>
-        document.getElementById('myForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        });
-    </script>
+    </div>
 </body>
 </html>
