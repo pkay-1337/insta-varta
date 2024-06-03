@@ -1,5 +1,6 @@
 const path = require("path");
 const reg = require('./js/register');
+const log = require("./js/login");
 const con = require("./js/db");
 const {app, server} = require("./js/ws");
 conn = con.conn;
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
   //console.log(req.headers);
 });
 app.post("/register", async (req,res) => reg.register(req,res));
+app.post("/login", async (req,res) => log.login(req,res));
 
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
