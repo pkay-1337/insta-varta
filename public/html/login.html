@@ -54,7 +54,12 @@
                         let x = response.json();
                         x.then((data) => {
                             console.log(data);
-                        })
+                            if( data['success'] ){
+                                let home = fetch("/home");
+                                home.then((r) => r.json())
+                                .then((d) => document.body.innerHTML = d['body']);
+                            };
+                        });
                     });
             }
         }
