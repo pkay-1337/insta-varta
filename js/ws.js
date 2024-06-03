@@ -29,15 +29,17 @@ wss.on("connection", (ws, request) => {
   const parsedUrl = url.parse(request.url, true);
   let path = parsedUrl.pathname;
   path = path.slice(1);
-  console.log(path);
+  //console.log(path);
   // Message event handler
   socs[path] = ws;
+  console.log("socs path : " + path);
   ws.on("message", (message) => {
     const parsedUrl = url.parse(request.url, true);
     let path = parsedUrl.pathname;
     path = path.slice(1);
     console.log(`Received from ${path} : ${message}`);
-    socs[path].send(`Echo: ${message}`);
+    //socs[path].send(`${message}`);
+    socs[path].send(JSON.stringify({"success":"Message Recieved"}));
   });
 
   // Close event handler
@@ -45,7 +47,4 @@ wss.on("connection", (ws, request) => {
     console.log("Client disconnected");
   });
 });
-function getSocs() {
-  return socs;
-}
 module.exports = {app, wss, socs, server}
