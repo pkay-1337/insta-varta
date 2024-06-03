@@ -23,11 +23,17 @@
                 console.error('WebSocket Error:', error);
             };
             ws.onmessage = (event) => {
-                if(event.data == "Registered"){
-                    alert("Registered");
-                    what(1);
+                let x = JSON.parse(event.data);
+                if(x['success']){
+                    if(x['success'] == 'Registered'){
+                        alert("Registered");
+                        what(1);
+                    }
+                    if(x['success'] == 'Login Successful'){
+                        console.log("Logged in");
+                    }
                 }else{
-                    console.log("got message : " + event.data)
+                    console.error(x);
                 }
             };
             if(form == "reg"){
@@ -43,7 +49,13 @@
                     "username" : document.getElementById("userName").value,
                     "password" : document.getElementById("password").value
                 }
-                fetch("/login",{method : "POST",headers: {"Content-Type": "application/json"}, body : JSON.stringify(data)})
+                    let res = fetch("/login",{method : "POST",headers: {"Content-Type": "application/json"}, body : JSON.stringify(data)});
+                    res.then((response) => {
+                        let x = response.json();
+                        x.then((data) => {
+                            console.log(data);
+                        })
+                    });
             }
         }
     </script>
