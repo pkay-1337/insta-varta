@@ -55,7 +55,7 @@ async function register(req,res){
       res.status(200).send('ok');
       //res.status(201).send(`Data inserted with ID: ${result.insertId}`);
       req.destroy();
-      socs[n].send("Registered");
+      socs[n].send(JSON.stringify({"success":"Registered"}));
       console.log("registered");
     }
   } catch (err) {
