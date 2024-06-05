@@ -1,28 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="width: 100%; height: 100%;overflow: hidden;margin: 0;padding: 0;">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="A social media app for all" />
     <title>Insta-Varta</title>
     <script>
-        var ws = new WebSocket('ws://localhost:8080');
-        ws.onopen = () => {
-            console.log('Connected to the server');
-        };
-        ws.onclose = () => {
-            console.log('Disconnected from the server');
-        };
-
-        ws.onerror = (error) => {
-            console.error('WebSocket Error:', error);
-        };
-        ws.onmessage = (event) => {
-            document.write(event.data);
-        };
+        var ws;
+        var path;
+        async function get(p){
+            localStorage.setItem('path',p);
+            const iframe = document.getElementById('f');
+            localStorage.path = p;
+            path = localStorage.path;
+            let f = fetch("/",{headers : {"Xyz":path}});
+            f.then((res) => res.json())
+            .then((data) => {
+                if(data['body']){
+                    iframe.contentWindow.document.open();
+                    iframe.contentWindow.document.write(data['body']);
+                    iframe.contentWindow.document.close();
+                    //document.body.innerHTML = data['body'];
+                    //ws = data;
+                }
+                if(data['all']){
+                    document.write(data['all']);
+                }
+                if(data['error']){
+                    console.error(data['error']);
+                }
+            })
+        }
     </script>
   </head>
-  <body>
-
+  <body style="width: 100%; height: 100%;overflow: hidden;margin: 0;padding: 0;">
+    <iframe id="f" style="height: 100%; width: 100%;"></iframe>
+    <script>
+        if(document.cookie == ''){get('login')}else{get('home')};
+    </script>
   </body>
 </html>
