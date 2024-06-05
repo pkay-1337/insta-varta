@@ -8,10 +8,12 @@
     <script>
         var ws;
         var path;
+        if(localStorage.path && localStorage.path != ""){
+            path = localStorage.path;
+        }else{path = 'home';}
         async function get(p){
             localStorage.setItem('path',p);
             const iframe = document.getElementById('f');
-            localStorage.path = p;
             path = localStorage.path;
             let f = fetch("/",{headers : {"Xyz":path}});
             f.then((res) => res.json())
@@ -28,6 +30,10 @@
                 }
                 if(data['error']){
                     console.error(data['error']);
+                    if(data['error'] == 'Bad path'){
+                        path = 'home';
+                        get(path);
+                    }
                 }
             })
         }
@@ -36,7 +42,7 @@
   <body style="width: 100%; height: 100%;overflow: hidden;margin: 0;padding: 0;">
     <iframe id="f" style="height: 100%; width: 100%;"></iframe>
     <script>
-        if(document.cookie == ''){get('login')}else{get('home')};
+        if(document.cookie == ''){get('login')}else{get(path)};
     </script>
   </body>
 </html>
