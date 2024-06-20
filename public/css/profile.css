@@ -37,8 +37,8 @@ body{
     height: 30vh;
     width: 100%;
     justify-content: space-around;
-    padding-bottom: 2%;
-    border-bottom: 2px solid white;
+    padding-bottom: 5px;
+    border-bottom: 1px solid white;
 }
 #name{
     display: flex;
@@ -58,6 +58,8 @@ body{
     flex-direction: column;
     row-gap: 5%;
     width: 98%;
+    border-right: 1px solid white;
+    border-top: 1px solid white;
 }
 #profilephoto{
     height: 100%;
@@ -130,7 +132,7 @@ body{
     #nameedit{
         display: flex;
         flex-direction: row;
-        gap: 40px;
+        gap: 0px;
     }
     #editprofile{
         color: white;
