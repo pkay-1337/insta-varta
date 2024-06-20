@@ -1,6 +1,6 @@
 const con = require("./db");
 const crypto = require("crypto");
-const {app, wss, socs, server} = require("./ws");
+//const {app, wss, socs, server} = require("./ws");
 var conn;
 function setCookie(name, value, days) {
     let expires = "";
@@ -34,61 +34,65 @@ async function login(req,res) {
         const query = `select email,password from users where email='${e}';`
         let r = await conn.query(query);
         if(r.length < 1){
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end(JSON.stringify({'error':"failed"}));
-            socs[e].send(
+            res.send(
                 JSON.stringify({ error: "wrong email or password" })
             );
             ok = 0;
+            return;
         }
-        if(r[0]['password'] == p) {
-            console.log("socs going to : " + e);
-            res.setHeader('Set-Cookie', cookie);
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end(JSON.stringify({'success':"ok"}));
-            socs[e].send(JSON.stringify({"success":"Login Successful"}));
-        }else{
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end(JSON.stringify({'error':"failed"}));
-            socs[e].send(
-                JSON.stringify({ error: "wrong email or password" })
-            );
-            ok = 0;
+        else{
+            if(r[0]['password'] === p) {
+                let c = createCookie()
+                cookie = setCookie('session',c,1/24);
+                await conn.query(`update users set cookie = '${c}' where email='${e}';`)
+                console.log(Date.now());
+                let later = String(Date.now() + (1000 * 60 * 60));
+                await conn.query(`update users set time = '${later}' where email='${e}';`)
+                //res.setHeader('Set-Cookie', cookie);
+                res.writeHead(302, { 'Content-Type': 'text/plain',"Set-Cookie": `${cookie}`,/* "Location":"/home"*/ });
+                res.end(JSON.stringify({"success":"Login Successful"}));
+                return;
+            }else{
+                res.send(
+                    JSON.stringify({ error: "wrong email or password" })
+                );
+                ok = 0;
+                return
+            }
         }
     }else{
-
         e = encodeURIComponent(req.body.username.trim());
-        const query = `select username,password from users where username ='${e}';`
+        const query = `select username,password from users where binary username ='${e}';`
         let r = await conn.query(query);
         if(r.length < 1){
-            console.log("socs going to : " + e);
             res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end(JSON.stringify({'error':"failed"}));
-            socs[e].send(
+            res.end(
                 JSON.stringify({ error: "wrong username or password" })
             );
             ok = 0;
-        }
-        if(r[0]['password'] == p) {
-            cookie = setCookie('session',createCookie(),7);
-            res.setHeader('Set-Cookie', cookie);
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end(JSON.stringify({'success':"ok"}));
-            //res.end('ok');
-            socs[e].send(JSON.stringify({"success":"Login Successful"}));
+            return;
         }else{
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end(JSON.stringify({'error':"failed"}));
-            socs[e].send(
-                JSON.stringify({ error: "wrong username or password" })
-            );
-            ok = 0;
+            if(r[0]['password'] === p) {
+                let c = createCookie()
+                cookie = setCookie('session',c,(1/24));
+                await conn.query(`update users set cookie = '${c}' where username ='${e}';`);
+                let later = String(Date.now() + (60*60*1000));
+                await conn.query(`update users set time = '${later}' where username='${e}';`);
+                //res.setHeader('Set-Cookie', cookie);
+                res.writeHead(200, { 'Content-Type': 'text/plain' ,"Set-Cookie": `${cookie}`,/*"Location":"/home"*/});
+                //res.end('ok');
+                res.end(JSON.stringify({"success":"Login Successful"}));
+                return;
+            }
+            else{
+                res.send(
+                    JSON.stringify({ error: "wrong username or password" })
+                );
+                ok = 0;
+                return;
+            }
         }
     }
-    if(ok==0){
-      socs[e].close();
-      delete socs[e];
-    };
   }catch(err){
     console.log(err);
   }

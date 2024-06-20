@@ -1,29 +1,113 @@
 body{
-    text-align: center;
+    /*text-align: center;*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+}
+h1{
+  font-size: 3rem;
+  font-style: italic;
 }
 form {
-  display: inline-block;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 1em;
   margin: 1em;
-  border: 1px solid #ccc;
+  border: 0px solid #ccc;
   border-radius: 1em;
+  -webkit-border-radius: 1em;
+  -moz-border-radius: 1em;
+  -ms-border-radius: 1em;
+  -o-border-radius: 1em;
 }
-label {
-  display:block;
-  min-width: 90px;
-  text-align: left;
+#magic{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 input{
-  font: 1em sans-serif;
-  width: 300px;
+  display: block;
+}
+label {
+  position: absolute;
+  align-self: last baseline;
+  text-align:start;
+  z-index: 0;
+  pointer-events: none;
+  bottom: 1rem;
+}
+input{
+  font: 1rem monospace;
+  width: 100%;
   box-sizing: border-box;
   border: 1px solid #999;
   border-top: 0em;
   border-right: 0em;
   border-left: 0em;
-  background-color: #fff;
 }
 
 input:focus{
     outline: none;
+}
+#buttons{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2em;
+}
+#container{
+  font-size: 16px;
+width: 90vw;
+}
+#myForm div{
+  width: 100%;
+}
+html{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content:space-around;
+  font-size: 1rem;
+  font-family: 'Courier New', Courier, monospace;
+
+}
+.input:focus-within label{
+  visibility: hidden;
+  transform: translateX(20rem);
+  transition-duration: 400ms;
+  -webkit-transform: translateX(20rem);
+  -moz-transform: translateX(20rem);
+  -ms-transform: translateX(20rem);
+  -o-transform: translateX(20rem);
+}
+.input input:valid + label {
+    visibility: hidden;
+}
+.input {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+#but{
+  font-size: 20px;
+  background-color: white;
+  width: 100%;
+  border-radius: 100px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  -ms-border-radius: 100px;
+  -o-border-radius: 100px;
+  padding: 10px;
+}
+.but2{
+  font-size: 20px;
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  background-color: white;
 }

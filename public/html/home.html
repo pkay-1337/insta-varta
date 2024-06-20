@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" style="width: 100%; height: 100%;overflow: hidden;margin: 0;padding: 0;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insta-varta</title>
+    <script>
+        function getPage(page){
+                let x = document.getElementById(page.slice(1));
+                if(x){
+                    x.style.pointerEvents = "none";
+                    setTimeout(()=>x.style.pointerEvents="",5000);
+                }
+            fetch(page)
+            .then(res => { return res.text()})
+            .then(txt => {
+                main.document.open();
+                main.document.write(txt);
+                main.document.close();
+            })
+        }
+        /*
+        fetch("/", {method: "GET", headers: { "Get" : "username" }})
+        .then( res => {
+            return res.text()
+        })
+        .then(txt => {
+            h = document.getElementById("h");
+            data = h.innerHTML + " " + txt;
+            h.innerHTML = data;
+        })
+            */
+    </script>
+    <link rel="stylesheet" href="home.css">
+</head>
+<body>
+        <div id="bottom">
+            <div class="page">
+                <button class="but" id="start" onclick="getPage('/start')">home</button>
+            </div>
+            <div class="page">
+                <button class="but" id="search" onclick="getPage('/search')">search</button>
+            </div>
+            <div class="page">
+                <button class="but" id="upload" onclick="getPage('/upload')">upload</button>
+            </div>
+            <div class="page">
+                <button class="but" id="chat" onclick="getPage('/chat')">chat</button>
+            </div>
+            <div class="page">
+                <button class="but" id="profile" onclick="getPage('/profile')">profile</button>
+            </div>
+            <div id="filler"></div>
+        </div>
+        <iframe id="main"></iframe>
+        <script>
+            var main = document.getElementById("main").contentWindow;
+        </script>
+</body>
+</html>

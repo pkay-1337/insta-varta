@@ -1,24 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script>var ws; </script>
+</head>
+<body>
     <script>
         var path;
-        async function get(){
-            if(localStorage.path){
-                path = localStorage.path;
-            };
-            let f = fetch("/",{headers : {"Path":path}});
-            f.then((res) => res.json())
-            .then((data) => {
-                if(data['body']){
-                    //document.body.innerHTML = data['body'];
-                    ws = data;
-                }if(data['error']){
-                    console.error(data['error']);
-                }
-            })
-        }
         async function con(form){
             x = document.getElementById("userName").value;
             console.log(x);
-            ws = new WebSocket(`ws://localhost:8080/${x}`);
+            ws = new WebSocket(`ws://${document.location.host}/${x}`);
+            window.parent.ws = ws;
             ws.onopen = () => {
                 console.log('Connected to the server');
             };
@@ -62,8 +57,9 @@
                         x.then((data) => {
                             console.log(data);
                             if( data['success'] ){
-                                localStorage.setItem('path',"home");
-                                get();
+                                //localStorage.setItem('xyz',"home");
+                                window.parent.get('home');
+                                alert("logged innnn");
                             };
                         });
                     });
@@ -73,7 +69,7 @@
     <link rel="stylesheet" href="css/login.css">
     <script>
         let reg = "ICAgICAgICAgICAgPGZvcm0gaWQ9Im15Rm9ybSI+PGJyPgoJCQkJPGxhYmVsIGZvcj0idXNlck5hbWUiPiB1c2VyIG5hbWUqIDwvbGFiZWw+PGJyPgoJCQkJPGlucHV0IHR5cGU9InRleHQiIG5hbWU9InVzZXJOYW1lIiBpZD0idXNlck5hbWUiPjxicj4KICAgICAgICAgICAgICAgIDxsYWJlbCBmb3I9ImVtYWlsIj4gRW1haWwqIDwvbGFiZWw+PGJyPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9ImVtYWlsIiBuYW1lPSJlbWFpbCIgaWQ9ImVtYWlsIj4KCQkJCTxicj4KICAgICAgICAgICAgICAgIDxsYWJlbCBmb3I9InBhc3MiPiBQYXNzd29yZCogPC9sYWJlbD4KCQkJCTxicj4KICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJwYXNzd29yZCIgbmFtZT0icGFzc3dvcmQiIGlkPSJwYXNzd29yZCI+CgkJCQk8YnI+CiAgICAgICAgICAgICAgICA8YnV0dG9uIHR5cGU9InN1Ym1pdCIgb25jbGljaz0iY29uKCdyZWcnKSI+UkVHSVNURVI8L2J1dHRvbj4KICAgICAgICAgICAgPC9mb3JtPg==";
-        let log = "PGZvcm0gYWN0aW9uPSIvbG9naW4iIG1ldGhvZD0icG9zdCI+PGJyPgogICAgICAgICAgICAgICAgPGxhYmVsIGZvcj0iZW1haWwiPiBFbWFpbCogPC9sYWJlbD48YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0iZW1haWwiIG5hbWU9ImVtYWlsIiBpZD0iZW1haWwiPjxicj4KICAgICAgICAgICAgICAgIDxsYWJlbCBmb3I9InBhc3MiPiBQYXNzd29yZCogPC9sYWJlbD48YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0icGFzc3dvcmQiIG5hbWU9InBhc3N3b3JkIiBpZD0icGFzcyI+PGJyPgogICAgICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPkxPR0lOPC9idXR0b24+CiAgICAgICAgICAgIDwvZm9ybT4=";
+        let log = "ICAgICAgICAgICAgPGZvcm0gaWQ9Im15Rm9ybSI+PGJyPgoJCQkJPGxhYmVsIGZvcj0idXNlck5hbWUiPiBlbWFpbCAvIHVzZXJuYW1lKiA8L2xhYmVsPjxicj4KCQkJCTxpbnB1dCB0eXBlPSJ0ZXh0IiBuYW1lPSJ1c2VyTmFtZSIgaWQ9InVzZXJOYW1lIj48YnI+CiAgICAgICAgICAgICAgICA8bGFiZWwgZm9yPSJwYXNzIj4gUGFzc3dvcmQqIDwvbGFiZWw+CgkJCQk8YnI+CiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT0icGFzc3dvcmQiIG5hbWU9InBhc3N3b3JkIiBpZD0icGFzc3dvcmQiPgoJCQkJPGJyPgogICAgICAgICAgICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiIG9uY2xpY2s9ImNvbignbG9nJykiPkxPR0lOPC9idXR0b24+CiAgICAgICAgICAgIDwvZm9ybT4=";
         function what(x){
             let a = document.getElementById("magic");
             if(x == 0){
@@ -96,19 +92,7 @@
         <button onclick="what(1)">Login</button>
         </div>
         <div id="magic">
-            <form id="myForm"><br>
-				<label for="userName"> email / username* </label><br>
-				<input type="text" name="userName" id="userName"><br>
-                <label for="pass"> Password* </label>
-				<br>
-                <input type="password" name="password" id="password">
-				<br>
-                <button type="submit" onclick="con('log')">REGISTER</button>
-            </form>
-            <script>
-                document.getElementById('myForm').addEventListener('submit', function(event) {
-                event.preventDefault();
-                });
-            </script>
         </div>
     </div>
+</body>
+</html>

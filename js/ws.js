@@ -1,18 +1,20 @@
-const http = require("http");
+const https = require("https");
 const fs = require("fs");
 const url = require("url");
 var express = require("express");
 const WebSocket = require("ws");
 var app = express();
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static("public/css"));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
+const options = {
+  key:fs.readFileSync("certs/key.pem"),
+  cert:fs.readFileSync("certs/cert.pem")
+}
+const server = https.createServer(options,app);
 
-const server = http.createServer(app);
-
-// WEB SOCKETTTTTTTTTTTT
-// Initialize a WebSocket server instance
 const wss = new WebSocket.Server({ server });
 function s(filePath) {
   fs.readFile(filePath, "utf8", (err, data) => {
