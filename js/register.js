@@ -57,6 +57,7 @@ async function register(req,res){
       console.log(ok)
       const query = `INSERT INTO users (username,email, password) VALUES ('${n}','${e}','${p}')`;
       const result = await conn.query(query);
+      await conn.query(`create table ${n+'photo'}(photo varchar(20),caption varchar(200));`);
       res.status(200).send(JSON.stringify({"success":"Registered"}));
       console.log("registered");
 

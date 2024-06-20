@@ -6,6 +6,8 @@ const init = require("./js/init");
 const home = require("./js/home");
 const get = require("./js/getpage");
 const edit = require("./js/edit");
+const upload = require("./js/upload");
+const getphotos = require("./js/getphotos");
 const { app, server } = require("./js/ws");
 const fs = require("fs").promises;
 const { exec } = require("child_process");
@@ -22,10 +24,13 @@ app.get("/home",(req,res) => { home(req,res) });
 app.get("/profile",(req,res) => {get(req,res,"../public/html/profile.html")});
 app.get("/edit",(req,res) => {get(req,res,"../public/html/edit.html")});
 app.get("/profilePic",(req,res) => {get(req,res,'profile')});
+app.get('/upload',(req,res) => {get(req,res,"../public/html/upload.html")})
+app.get("/myphotos",(req,res)=> getphotos(req,res,'$'));
+app.get("/photo", (req,res)=> {get(req,res,"../uploads/"+req.query['p'])});
 app.post("/register", async (req, res) => reg.register(req, res));
 app.post("/login", async (req, res) => log.login(req, res));
 app.post("/edit",(req,res) => {edit(req,res)});
-
+app.post("/upload",(req,res) => {upload(req,res)});
 
 
 const port = 443;

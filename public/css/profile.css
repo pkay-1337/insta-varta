@@ -73,6 +73,43 @@ body{
     height: 75%;
     padding-top: 2%;
 }
+#photo{
+    width: 100%;
+    padding: 0px;
+    margin: 0;
+}
+#photos{
+    width:99%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+}
+#post{
+    width: 100%;
+    border: 1px solid white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+#uname{
+    font-size: larger;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 10px;
+    border: 2px solid white;
+    border-collapse: collapse;
+}
+#caption{
+    font-size: larger;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 5px;
+    padding-left: 10px;
+    border: 2px solid white;
+    border-collapse: collapse;
+    border-top: 2px solid gray;
+}
 @media screen and (min-width: 800px) {
     html{
         height: 100%;
@@ -133,5 +170,19 @@ body{
      padding-left: 2%;
     height: 75%;
     padding-top: 2%;       scrollbar-width: none;
+    }
+    #photos{
+        width:99%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        gap: 20px;
+    }
+    #post{
+        width: 50%;
+    }
+    #photo{
+        width: 100%;
     }
 }
