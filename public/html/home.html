@@ -6,20 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insta-varta</title>
     <script>
-        function getPage(page) {
-            localStorage['path'] = page;
-            let x = document.getElementById(page.slice(1));
-            if (x) {
-                x.style.pointerEvents = "none";
-                setTimeout(() => x.style.pointerEvents = "", 5000);
+        function getPage(page, z = 0) {
+            if (z == 0) {
+                localStorage['path'] = page;
+                let x = document.getElementById(page.slice(1));
+                if (x) {
+                    x.style.pointerEvents = "none";
+                    setTimeout(() => x.style.pointerEvents = "", 5000);
+                }
+                fetch(page)
+                    .then(res => {return res.text()})
+                    .then(txt => {
+                        main.document.open();
+                        main.document.write(txt);
+                        main.document.close();
+                    })
+            } else {
+                localStorage['user'] = z;
+                localStorage['path'] = page;
+                let x = document.getElementById(page.slice(1));
+                if (x) {
+                    x.style.pointerEvents = "none";
+                    setTimeout(() => x.style.pointerEvents = "", 5000);
+                }
+                fetch(page)
+                    .then(res => {return res.text()})
+                    .then(txt => {
+                        main.document.open();
+                        main.document.write(txt);
+                        main.document.close();
+                    })
             }
-            fetch(page)
-                .then(res => {return res.text()})
-                .then(txt => {
-                    main.document.open();
-                    main.document.write(txt);
-                    main.document.close();
-                })
         }
         /*
         fetch("/", {method: "GET", headers: { "Get" : "username" }})

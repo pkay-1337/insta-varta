@@ -29,7 +29,8 @@
                 h = document.getElementById("name");
                 data = h.innerHTML + " " + txt;
                 h.innerHTML = data;
-            })
+            });
+
         fetch("/", {method: "GET", headers: {"Get": "bio"}})
             .then(res => {
                 return res.text()
@@ -37,44 +38,84 @@
             .then(txt => {
                 b = document.getElementById("bio");
                 b.innerHTML = txt;
-            })
+            });
+
+        var photosContainer = document.getElementById('photos');
+        var photos = [];
+        var currentBatch = 0;
+        var batchSize = 10;
+
+        async function addPhotosSequentially(photos, start, end) {
+            for (let i = start; i < end; i++) {
+                const element = photos[i];
+                if (!element) break;
+
+                const photoDiv = document.createElement('div');
+                photoDiv.id = 'post';
+
+                // Create the first text div
+                const textDiv1 = document.createElement('div');
+                textDiv1.id = 'uname';
+                textDiv1.textContent = element['name'];
+
+                // Create the image tag
+                const image = document.createElement('img');
+                image.id = 'photo';
+                image.src = '/photo?p=' + element['photo']; // Replace with your desired URL
+                image.alt = 'Photo';
+
+                // Create the second text div
+                const textDiv2 = document.createElement('div');
+                textDiv2.id = 'caption';
+                textDiv2.textContent = element['caption'];
+
+                // Append the text divs to the main div
+                photoDiv.appendChild(textDiv1);
+                photoDiv.appendChild(image);
+                photoDiv.appendChild(textDiv2);
+
+                // Append the main div to the container
+                photosContainer.appendChild(photoDiv);
+
+                // Wait for the image to load before continuing to the next one
+                await new Promise((resolve) => {
+                    image.onload = resolve;
+                });
+            }
+        }
+
+        function loadMorePhotos(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    observer.unobserve(entry.target); // Unobserve the current target
+                    currentBatch += batchSize;
+                    addPhotosSequentially(photos, currentBatch, currentBatch + batchSize).then(() => {
+                        // Observe the new last photo
+                        const lastPhoto = photosContainer.lastElementChild;
+                        if (lastPhoto) {
+                            observer.observe(lastPhoto);
+                        }
+                    });
+                }
+            });
+        }
+
         fetch("/myphotos")
             .then(res => {
                 return res.text()
             })
             .then(txt => {
-                p = document.getElementById("photos");
-                x = JSON.parse(txt);
-                x.forEach(element => {
-                    const photoDiv = document.createElement('div');
-                    photoDiv.id = 'post';
-
-                    // Create the first text div
-                    const textDiv1 = document.createElement('div');
-                    textDiv1.id = 'uname';
-                    textDiv1.textContent = element['name'];
-
-                    // Create the image tag
-                    const image = document.createElement('img');
-                    image.id = 'photo';
-                    image.src = '/photo?p=' + element['photo']; // Replace with your desired URL
-                    image.alt = 'Photo';
-
-                    // Create the second text div
-                    const textDiv2 = document.createElement('div');
-                    textDiv2.id = 'caption';
-                    textDiv2.textContent = element['caption'];
-
-                    // Append the text divs and image to the main div
-                    photoDiv.appendChild(textDiv1);
-                    photoDiv.appendChild(image);
-                    photoDiv.appendChild(textDiv2);
-
-                    // Append the main div to the body or another container element
-                    p.appendChild(photoDiv);
+                photos = JSON.parse(txt);
+                photos = photos.sort((a, b) => b.photo - a.photo);
+                addPhotosSequentially(photos, 0, batchSize).then(() => {
+                    // Observe the last photo after the first batch is loaded
+                    const lastPhoto = photosContainer.lastElementChild;
+                    if (lastPhoto) {
+                        const observer = new IntersectionObserver(loadMorePhotos, {threshold: 1.0});
+                        observer.observe(lastPhoto);
+                    }
                 });
-                console.log(x);
-            })
+            });
     </script>
 </body>
 

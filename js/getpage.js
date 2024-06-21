@@ -13,9 +13,7 @@ async function get(req, res, p) {
 	} else if (req.headers.cookie) {
 		//console.log("Logged in user");
 		const cookie = req.headers.cookie.split("=")[1];
-		const r = await conn.query(
-			`select * from users where cookie = '${cookie}';`,
-		);
+		let r = await conn.query(`select * from users where cookie = '${cookie}';`);
 		if (!r[0]) {
 			res.writeHead(302, {
 				Location: "/login",
@@ -38,8 +36,18 @@ async function get(req, res, p) {
 				return;
 			} else {
 				if (p == "profile") {
-					console.log(r[0]["profile"]);
-					res.sendFile(path.join(__dirname, "../uploads/" + r[0]["profile"]));
+					user = req.query["p"];
+					console.log("here", user);
+					if (user) {
+						r = await conn.query(
+							`select * from users where username = '${user}';`,
+						);
+						console.log(r[0]["profile"]);
+						res.sendFile(path.join(__dirname, "../uploads/" + r[0]["profile"]));
+					} else {
+						console.log(r[0]["profile"]);
+						res.sendFile(path.join(__dirname, "../uploads/" + r[0]["profile"]));
+					}
 				} else {
 					res.sendFile(path.join(__dirname, p));
 				}

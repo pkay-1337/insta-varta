@@ -3,7 +3,7 @@ let conn;
 (async () => {
 	conn = await con.getConnection();
 })();
-function getphotos(req, res, who) {
+function getphotos(req, res, who = 0) {
 	if (who == "$") {
 		const cookie = req.headers.cookie.split("=")[1];
 		let name;
@@ -14,6 +14,20 @@ function getphotos(req, res, who) {
 				`select username from users where cookie='${cookie}'`,
 			);
 			name = name[0]["username"];
+			//console.log(name);
+			result = await conn.query(`select * from ${name + "photo"};`);
+			result.forEach((element) => {
+				element["name"] = name;
+				x.push(element);
+			});
+			x = JSON.stringify(x);
+			res.send(x);
+		})();
+	} else if (who == 0) {
+		name = req.headers["user"];
+		let result;
+		let x = [];
+		(async () => {
 			//console.log(name);
 			result = await conn.query(`select * from ${name + "photo"};`);
 			result.forEach((element) => {

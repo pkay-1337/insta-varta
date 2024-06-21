@@ -6,12 +6,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
   <link href="search.css" rel="stylesheet">
+  <script>
+    function search() {
+      a = {'search': document.getElementById('search').value};
+      a = JSON.stringify(a);
+      fetch("/search", {method: 'POST', headers: {"search": a}})
+        .then(res => {
+          return res.text()
+        })
+        .then(txt => {
+          p = document.getElementById("results");
+          x = JSON.parse(txt);
+          p.innerHTML = '';
+          x.forEach(element => {
+            const userDiv = document.createElement('div');
+            userDiv.id = 'user';
+
+            // Create the a tag
+            const link = document.createElement('a');
+            link.class = 'link';
+            link.href = '/profile?p=' + element['username']; // Replace with your desired URL
+            link.innerText = element['username'];
+
+
+            // Append the text divs and image to the main div
+            userDiv.innerHTML = "<button class='button' onclick=" + "parent.getPage('/user','" + element['username'] + "')>" + element['username'] + "</button>";
+
+            // Append the main div to the body or another container element
+            p.appendChild(userDiv);
+          });
+          console.log(x);
+        })
+    }
+  </script>
 </head>
 
 <body>
   <div id="box">
     <input type="text" name="search" id="search" placeholder="Search for users">
-    <button id="button">Search</button>
+    <button id="button" onclick="search()">Search</button>
     <div id="results"></div>
   </div>
 </body>

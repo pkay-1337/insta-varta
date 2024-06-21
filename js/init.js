@@ -8,12 +8,21 @@ async function init(req, res) {
 	try {
 		if (req.headers["get"]) {
 			const g = req.headers["get"];
-			const r = await conn.query(
-				`select ${g} from users where cookie='${
-					req.headers.cookie.split("=")[1]
-				}'`,
-			);
-			res.send(r[0][g]);
+			const u = req.headers["user"];
+			console.log("u = " + u);
+			if (!u) {
+				const r = await conn.query(
+					`select ${g} from users where cookie='${
+						req.headers.cookie.split("=")[1]
+					}'`,
+				);
+				res.send(r[0][g]);
+			} else {
+				const r = await conn.query(
+					`select ${g} from users where username='${u}'`,
+				);
+				res.send(r[0][g]);
+			}
 		} else {
 			if (!req.headers.cookie) {
 				res.writeHead(302, {

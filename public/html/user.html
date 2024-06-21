@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>profile</title>
+  <link rel="stylesheet" href="profile.css">
+  <script>
+    function follow() {
+      fetch("/follow", {method: "GET", headers: {"user": localStorage['user']}})
+        .then(res => {
+          return res.text()
+        })
+        .then(txt => {
+          h = document.getElementById("editprofile");
+          if (txt == 'yes') {
+            h.innerHTML = "Unfollow";
+          } else {
+            h.innerHTML = "Follow";
+          }
+        })
+
+    }
+  </script>
+</head>
+
+<body>
+  <div id="head">
+    <img src="" alt="Profile Photo" id="profilephoto">
+    <script>document.getElementById('profilephoto').src = `/profilePic?p=${localStorage['user']}`</script>
+    <div id="details">
+      <div id="nameedit">
+        <div id="name"></div>
+        <button id="editprofile" onclick="follow()">idk</button>
+        <script>
+          fetch("/doifollow", {method: "GET", headers: {"user": localStorage['user']}})
+            .then(res => {
+              return res.text()
+            })
+            .then(txt => {
+              h = document.getElementById("editprofile");
+              if (txt == 'yes') {
+                h.innerHTML = "Unfollow";
+              } else {
+
+                h.innerHTML = "Follow";
+              }
+            })
+
+        </script>
+      </div>
+      <div id="bio"></div>
+    </div>
+  </div>
+  <div id="photos"></div>
+  <script>
+    fetch("/", {method: "GET", headers: {"Get": "username", "user": localStorage['user']}})
+      .then(res => {
+        return res.text()
+      })
+      .then(txt => {
+        h = document.getElementById("name");
+        data = h.innerHTML + " " + txt;
+        h.innerHTML = data;
+      })
+    fetch("/", {method: "GET", headers: {"Get": "bio", 'user': localStorage['user']}})
+      .then(res => {
+        return res.text()
+      })
+      .then(txt => {
+        b = document.getElementById("bio");
+        b.innerHTML = txt;
+      })
+    fetch("/userphotos", {headers: {"user": localStorage['user']}})
+      .then(res => {
+        return res.text()
+      })
+      .then(txt => {
+        p = document.getElementById("photos");
+        x = JSON.parse(txt);
+        x.forEach(element => {
+          const photoDiv = document.createElement('div');
+          photoDiv.id = 'post';
+
+          // Create the first text div
+          const textDiv1 = document.createElement('div');
+          textDiv1.id = 'uname';
+          textDiv1.textContent = element['name'];
+
+          // Create the image tag
+          const image = document.createElement('img');
+          image.id = 'photo';
+          image.src = '/photo?p=' + element['photo']; // Replace with your desired URL
+          image.alt = 'Photo';
+
+          // Create the second text div
+          const textDiv2 = document.createElement('div');
+          textDiv2.id = 'caption';
+          textDiv2.textContent = element['caption'];
+
+          // Append the text divs and image to the main div
+          photoDiv.appendChild(textDiv1);
+          photoDiv.appendChild(image);
+          photoDiv.appendChild(textDiv2);
+
+          // Append the main div to the body or another container element
+          p.appendChild(photoDiv);
+        });
+        console.log(x);
+      })
+  </script>
+</body>
+
+</html>
