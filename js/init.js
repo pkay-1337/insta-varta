@@ -1,4 +1,5 @@
 const con = require("./db");
+const path = require("path");
 let conn;
 (async () => {
 	conn = await con.getConnection();
@@ -45,10 +46,13 @@ async function init(req, res) {
 						res.end();
 						return;
 					} else {
+						res.sendFile(path.join(__dirname, "/../public/html/home.html"));
+						/*
 						res.writeHead(302, {
 							Location: "/home",
 						});
 						res.end();
+						*/
 					}
 				}
 			}

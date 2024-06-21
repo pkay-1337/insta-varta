@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>profile</title>
     <link rel="stylesheet" href="profile.css">
 </head>
+
 <body>
     <div id="head">
         <img src="/profilePic" alt="Profile Photo" id="profilephoto">
@@ -19,60 +21,61 @@
     </div>
     <div id="photos"></div>
     <script>
-        fetch("/", {method: "GET", headers: { "Get" : "username" }})
-        .then( res => {
-            return res.text()
-        })
-        .then(txt => {
-            h = document.getElementById("name");
-            data = h.innerHTML + " " + txt;
-            h.innerHTML = data;
-        })
-        fetch("/", {method: "GET", headers: { "Get" : "bio" }})
-        .then( res => {
-            return res.text()
-        })
-        .then(txt => {
-            b = document.getElementById("bio");
-            b.innerHTML = txt;
-        })
+        fetch("/", {method: "GET", headers: {"Get": "username"}})
+            .then(res => {
+                return res.text()
+            })
+            .then(txt => {
+                h = document.getElementById("name");
+                data = h.innerHTML + " " + txt;
+                h.innerHTML = data;
+            })
+        fetch("/", {method: "GET", headers: {"Get": "bio"}})
+            .then(res => {
+                return res.text()
+            })
+            .then(txt => {
+                b = document.getElementById("bio");
+                b.innerHTML = txt;
+            })
         fetch("/myphotos")
-        .then( res => {
-            return res.text()
-        })
-        .then(txt => {
-            p = document.getElementById("photos");
-            x = JSON.parse(txt);
-            x.forEach(element => {
-                const photoDiv = document.createElement('div');
-                photoDiv.id = 'post';
+            .then(res => {
+                return res.text()
+            })
+            .then(txt => {
+                p = document.getElementById("photos");
+                x = JSON.parse(txt);
+                x.forEach(element => {
+                    const photoDiv = document.createElement('div');
+                    photoDiv.id = 'post';
 
-                // Create the first text div
-                const textDiv1 = document.createElement('div');
-                textDiv1.id = 'uname';
-                textDiv1.textContent = 'user';
+                    // Create the first text div
+                    const textDiv1 = document.createElement('div');
+                    textDiv1.id = 'uname';
+                    textDiv1.textContent = element['name'];
 
-                // Create the image tag
-                const image = document.createElement('img');
-                image.id = 'photo';
-                image.src = '/photo?p='+element['photo']; // Replace with your desired URL
-                image.alt = 'Photo';
+                    // Create the image tag
+                    const image = document.createElement('img');
+                    image.id = 'photo';
+                    image.src = '/photo?p=' + element['photo']; // Replace with your desired URL
+                    image.alt = 'Photo';
 
-                // Create the second text div
-                const textDiv2 = document.createElement('div');
-                textDiv2.id = 'caption';
-                textDiv2.textContent = element['caption'];
+                    // Create the second text div
+                    const textDiv2 = document.createElement('div');
+                    textDiv2.id = 'caption';
+                    textDiv2.textContent = element['caption'];
 
-                // Append the text divs and image to the main div
-                photoDiv.appendChild(textDiv1);
-                photoDiv.appendChild(image);
-                photoDiv.appendChild(textDiv2);
+                    // Append the text divs and image to the main div
+                    photoDiv.appendChild(textDiv1);
+                    photoDiv.appendChild(image);
+                    photoDiv.appendChild(textDiv2);
 
-                // Append the main div to the body or another container element
-                p.appendChild(photoDiv);
-            });
-            console.log(x);
-        })
+                    // Append the main div to the body or another container element
+                    p.appendChild(photoDiv);
+                });
+                console.log(x);
+            })
     </script>
 </body>
+
 </html>

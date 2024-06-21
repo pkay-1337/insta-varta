@@ -11,7 +11,7 @@ async function home(req, res) {
 		});
 		res.end();
 	} else if (req.headers.cookie) {
-		console.log("Logged in user");
+		//console.log("Logged in user");
 		const cookie = req.headers.cookie.split("=")[1];
 		const r = await conn.query(
 			`select * from users where cookie = '${cookie}';`,

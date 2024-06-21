@@ -14,9 +14,10 @@ function getphotos(req, res, who) {
 				`select username from users where cookie='${cookie}'`,
 			);
 			name = name[0]["username"];
-			console.log(name);
+			//console.log(name);
 			result = await conn.query(`select * from ${name + "photo"};`);
 			result.forEach((element) => {
+				element["name"] = name;
 				x.push(element);
 			});
 			x = JSON.stringify(x);
