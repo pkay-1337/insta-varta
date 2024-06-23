@@ -19,12 +19,12 @@ async function photos(req, res) {
 	let x = [];
 	for (const element of follows) {
 		u = element["user"];
-		console.log("user - " + u);
+		//console.log("user - " + u);
 		r = await conn.query(`select * from ${u + "photo"};`);
 
 		//r.forEach((el) => {
 		for (const el of r) {
-			console.log("inner user - " + u);
+			//console.log("inner user - " + u);
 			el["name"] = u;
 			x.push(el);
 		}

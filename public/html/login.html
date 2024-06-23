@@ -5,6 +5,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+
+    <style>
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: top 0.5s ease;
+            z-index: 1000;
+            color: white;
+        }
+
+        .notification.success {
+            background-color: #4CAF50;
+        }
+
+        .notification.error {
+            background-color: #F44336;
+        }
+    </style>
+
+    <script>
+        function showNotification(message, type = 'success', duration = 3000) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+
+            // Add to DOM
+            document.body.appendChild(notification);
+
+            // Trigger animation
+            setTimeout(() => {
+                notification.style.top = '20px';
+            }, 100);
+
+            // Remove notification after duration
+            setTimeout(() => {
+                notification.style.top = '-100px';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, duration);
+        }
+    </script>
 </head>
 
 <body>
@@ -20,8 +68,13 @@
                     .then((res) => {
                         res.json()
                             .then((data) => {
-                                console.log(data);
-                                if (data['success'] == 'Registered') what(1);
+                                if (data['success'] == 'Registered') {
+                                    what(1);
+                                    showNotification("User Registered");
+                                }
+                                if (data['error']) {
+                                    showNotification(data['error'], 'error')
+                                }
                             })
                     })
             }
@@ -36,13 +89,15 @@
                     x.then((data) => {
                         console.log(data);
                         if (data['success'] == "Login Successful") {
+                            showNotification("Logged in")
                             //localStorage.setItem('xyz',"home");
                             window.location = "/";
-                            alert("logged innnn");
+                            //alert("logged innnn");
                         };
                         if (data['error']) {
                             //localStorage.setItem('xyz',"home");
-                            alert(data["error"]);
+                            //alert(data["error"]);
+                            showNotification(data['error'], 'error')
                         };
                     });
                 });

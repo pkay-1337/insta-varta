@@ -5,39 +5,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insta-varta</title>
+    <style>
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: top 0.5s ease;
+            z-index: 1000;
+            color: white;
+        }
+
+        .notification.success {
+            background-color: #4CAF50;
+        }
+
+        .notification.error {
+            background-color: #F44336;
+        }
+    </style>
+
+    <script>
+        function showNotification(message, type = 'success', duration = 3000) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+
+            // Add to DOM
+            document.body.appendChild(notification);
+
+            // Trigger animation
+            setTimeout(() => {
+                notification.style.top = '20px';
+            }, 100);
+
+            // Remove notification after duration
+            setTimeout(() => {
+                notification.style.top = '-100px';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, duration);
+        }
+    </script>
     <script>
         function getPage(page, z = 0) {
-            if (z == 0) {
-                localStorage['path'] = page;
-                let x = document.getElementById(page.slice(1));
-                if (x) {
-                    x.style.pointerEvents = "none";
-                    setTimeout(() => x.style.pointerEvents = "", 5000);
-                }
-                fetch(page)
-                    .then(res => {return res.text()})
+            if (z != 0 && page != '/chat') localStorage['user'] = z;
+            if ((z != 0 && page == '/chat')) {
+                localStorage['with'] = z;
+                localStorage['path'] = '/chatting';
+                fetch(page, {headers: {"with": z}})
+                    .then(res => {
+                        console.log(res.status);
+                        if (res.status == 299) {
+                            parent.location = "/login";
+                            return;
+                        }
+                        return res.text()
+                    })
                     .then(txt => {
                         main.document.open();
                         main.document.write(txt);
                         main.document.close();
                     })
-            } else {
-                localStorage['user'] = z;
-                localStorage['path'] = page;
-                let x = document.getElementById(page.slice(1));
-                if (x) {
-                    x.style.pointerEvents = "none";
-                    setTimeout(() => x.style.pointerEvents = "", 5000);
-                }
-                fetch(page)
-                    .then(res => {return res.text()})
+                return;
+            };
+            if (page == '/chatting') {
+                fetch('/chat', {headers: {"with": localStorage['with']}})
+                    .then(res => {
+                        console.log(res.status);
+                        if (res.status == 299) {
+                            parent.location = "/login";
+                            return;
+                        }
+                        return res.text()
+                    })
                     .then(txt => {
                         main.document.open();
                         main.document.write(txt);
                         main.document.close();
                     })
+                return;
+            };
+            //if (z == 0) {
+            localStorage['path'] = page;
+            let x = document.getElementById(page.slice(1));
+            if (x) {
+                x.style.pointerEvents = "none";
+                setTimeout(() => x.style.pointerEvents = "", 5000);
             }
+            fetch(page)
+                .then(res => {
+                    console.log(res.status);
+                    if (res.status == 299) {
+                        parent.location = "/login";
+                        return;
+                    }
+                    return res.text()
+                })
+                .then(txt => {
+                    main.document.open();
+                    main.document.write(txt);
+                    main.document.close();
+                })
+        }/* else {
+            localStorage['user'] = z;
+            localStorage['path'] = page;
+            let x = document.getElementById(page.slice(1));
+            if (x) {
+                x.style.pointerEvents = "none";
+                setTimeout(() => x.style.pointerEvents = "", 5000);
+            }
+            fetch(page)
+                .then(res => {
+                    console.log(res.status);
+                    if (res.status == 299) {
+                        parent.location = "/login";
+                        return;
+                    }
+                    return res.text()
+                })
+                .then(txt => {
+                    main.document.open();
+                    main.document.write(txt);
+                    main.document.close();
+                })
         }
+    }*/
         /*
         fetch("/", {method: "GET", headers: { "Get" : "username" }})
         .then( res => {
@@ -49,6 +147,15 @@
             h.innerHTML = data;
         })
             */
+    </script>
+    <script>
+        fetch("/", {method: "GET", headers: {"Get": "username"}})
+            .then(res => {
+                return res.text()
+            })
+            .then(txt => {
+                localStorage['me'] = txt;
+            });
     </script>
     <link rel="stylesheet" href="home.css">
 </head>

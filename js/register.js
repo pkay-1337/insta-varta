@@ -18,6 +18,13 @@ function register(req, res) {
 				ok = 0;
 				return;
 			}
+			if (n.length > 20) {
+				res.send(
+					JSON.stringify({ error: "username must not be longer than 20" }),
+				);
+				ok = 0;
+				return;
+			}
 			let r = await conn.query(
 				`select username from users where username = '${n}' `,
 			);
@@ -52,7 +59,8 @@ function register(req, res) {
 			if (ok == 0) return;
 			p = crypto.createHash("sha256").update(req.body.password).digest("hex");
 			console.log(ok);
-			const query = `INSERT INTO users (username,email, password) VALUES ('${n}','${e}','${p}')`;
+			const query =
+				`INSERT INTO users (username,email, password) VALUES ('${n}','${e}','${p}')`;
 			await conn.query(query);
 			await conn.query(
 				`create table ${n + "photo"}(photo varchar(20),caption varchar(200));`,

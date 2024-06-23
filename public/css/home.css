@@ -1,10 +1,11 @@
-html{
+html {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
   color: white;
 }
+
 body {
   display: flex;
   flex-direction: column;
@@ -12,6 +13,7 @@ body {
   width: 100%;
   margin: 0;
 }
+
 #main {
   background-color: black;
   height: 95%;
@@ -19,6 +21,7 @@ body {
   border: 0;
   color: white;
 }
+
 #bottom {
   position: fixed;
   bottom: 0;
@@ -32,9 +35,11 @@ body {
   margin: 0;
   border-top: 1px solid white;
 }
-#bottom :first-child{
+
+#bottom :first-child {
   border-left: 0;
 }
+
 .page {
   display: flex;
   flex: 1;
@@ -49,6 +54,7 @@ body {
   border-right: 0;
   border-left: 1;
 }
+
 .but {
   color: white;
   font-family: 'Courier New', Courier, monospace;
@@ -56,8 +62,9 @@ body {
   border: 0px;
   background-color: black;
   width: 95%;
-  height: 75%;
+  height: 100%;
 }
+
 /* laptop */
 @media screen and (min-width: 800px) {
   body {
@@ -67,6 +74,7 @@ body {
     height: 98vh;
     margin: 0;
   }
+
   #main {
     background-color: black;
     height: 100%;
@@ -74,6 +82,7 @@ body {
     margin: 0;
     border-left: 1px solid white;
   }
+
   #bottom {
     position: relative;
     padding: 0;
@@ -86,6 +95,7 @@ body {
     margin: 0;
     border: 0;
   }
+
   .page {
     display: flex;
     max-height: 50px;
@@ -94,14 +104,16 @@ body {
     align-items: center;
     border-left: 0;
   }
+
   .but {
     color: white;
     font-family: 'Courier New', Courier, monospace;
     font-size: larger;
-    max-height: 40px;
+    max-height: 50px;
     border-bottom: 1px solid white;
     background-color: black;
   }
+
   #filler {
     background-color: black;
     height: calc(100% - 250px);

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chat
+  </title>
+  <link href="chat.css" rel="stylesheet">
+
+  <script>
+    function getchats() {
+      fetch("/getchat", {method: "GET", headers: {"sender": localStorage['me'], 'reciever': localStorage['with']}})
+        .then(res => {
+          return res.json()
+        })
+        .then(data => {
+          data.reverse();
+          l = data.length;
+          chats = document.getElementById('chats');
+          for (i = 0; i < l; i++) {
+            const chatDiv = document.createElement('div');
+            chatDiv.className = 'chat';
+            const whoDiv = document.createElement('div');
+            if (data[i]['sender'] == localStorage['me']) {
+              whoDiv.className = 'me';
+            } else {
+              whoDiv.className = 'them';
+            }
+            whoDiv.textContent = data[i]['message'];
+            chatDiv.appendChild(whoDiv);
+            chats.appendChild(chatDiv);
+          }
+        });
+    }
+    fetch("/startchat", {method: "GET", headers: {"sender": localStorage['me'], 'reciever': localStorage['with']}})
+      .then(res => {
+        return res.text()
+      })
+      .then(txt => {
+        if (txt == 'ok') {
+          getchats();
+        }
+      });
+  </script>
+  <script>
+    function send() {
+      fetch("/send", {method: "POST", headers: {"sender": localStorage['me'], 'reciever': localStorage['with'], 'message': document.getElementById('in').value}})
+        .then(res => {
+          return res.text()
+        })
+        .then(txt => {
+          if (txt == 'ok') {
+            parent.showNotification("message sent", 'success', 1000);
+            const chatDiv = document.createElement('div');
+            chatDiv.className = 'chat';
+            const whoDiv = document.createElement('div');
+            whoDiv.className = 'me';
+            whoDiv.textContent = document.getElementById('in').value;
+            chatDiv.appendChild(whoDiv);
+            chats.prepend(chatDiv);
+          }
+          document.getElementById('in').value = '';
+        });
+    }
+  </script>
+</head>
+
+<body>
+  <div id="container">
+    <div id="with"></div>
+    <div id="chats">
+    </div>
+    <div id="message">
+      <form id="form">
+        <input type="text" name="message" id='in' placeholder="Type message">
+        <button type="submit" onclick="send()" id='but'>send</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    document.getElementById('form').addEventListener('submit', function (event) {event.preventDefault();});
+    document.getElementById('with').innerHTML = localStorage['with'];
+    //console.log(localStorage['with']);
+  </script>
+</body>
+
+</html>

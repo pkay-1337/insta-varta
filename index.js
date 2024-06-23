@@ -13,6 +13,10 @@ const profile = require("./js/profile");
 const follow = require("./js/follow");
 const doifollow = require("./js/doifollow");
 const photos = require("./js/photos");
+const chat = require("./js/chat");
+const startchat = require("./js/startchat");
+const send = require("./js/send");
+const getchat = require("./js/getchat");
 const { app, server } = require("./js/ws");
 //const fs = require("fs").promises;
 //const { exec } = require("child_process");
@@ -25,7 +29,7 @@ app.get("/", (req, res) => {
 	init(req, res);
 });
 app.get("/login", (_req, res, _next) => {
-	res.sendFile(path.join(__dirname, "public/html/login.html"));
+	res.status(299).sendFile(path.join(__dirname, "public/html/login.html"));
 });
 /*
 app.get("/home", (req, res) => {
@@ -62,6 +66,9 @@ app.get("/user", (req, res) => {
 });
 app.get("/follow", (req, res) => follow(req, res));
 app.get("/doifollow", (req, res) => doifollow(req, res));
+app.get("/chat", (req, res) => chat(req, res));
+app.get("/startchat", (req, res) => startchat(req, res));
+app.get("/getchat", (req, res) => getchat(req, res));
 app.post("/register", (req, res) => reg.register(req, res));
 app.post("/login", (req, res) => log.login(req, res));
 app.post("/edit", (req, res) => {
@@ -72,6 +79,9 @@ app.post("/upload", (req, res) => {
 });
 app.post("/search", (req, res) => {
 	search(req, res);
+});
+app.post("/send", (req, res) => {
+	send(req, res);
 });
 
 const port = 443;

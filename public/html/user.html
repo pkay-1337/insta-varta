@@ -32,6 +32,7 @@
     <div id="details">
       <div id="nameedit">
         <div id="name"></div>
+        <button id="chat" onclick="parent.getPage('/chat',localStorage['user'])">chat</button>
         <button id="editprofile" onclick="follow()">idk</button>
         <script>
           fetch("/doifollow", {method: "GET", headers: {"user": localStorage['user']}})

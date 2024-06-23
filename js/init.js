@@ -9,7 +9,7 @@ async function init(req, res) {
 		if (req.headers["get"]) {
 			const g = req.headers["get"];
 			const u = req.headers["user"];
-			console.log("u = " + u);
+			//console.log("u = " + u);
 			if (!u) {
 				const r = await conn.query(
 					`select ${g} from users where cookie='${
