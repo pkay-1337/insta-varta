@@ -73,6 +73,7 @@ body {
   display: flex;
   flex-direction: column-reverse;
   gap: 5px;
+  overflow: scroll;
 }
 
 .chat {

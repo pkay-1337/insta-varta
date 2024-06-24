@@ -149,12 +149,46 @@
             */
     </script>
     <script>
+        var ws;
         fetch("/", {method: "GET", headers: {"Get": "username"}})
             .then(res => {
                 return res.text()
             })
             .then(txt => {
                 localStorage['me'] = txt;
+                ws = new WebSocket(`wss://${document.location.host}/${localStorage['me']}`);
+                ws.onopen = () => {
+                    console.log('Connected to the server');
+                };
+                ws.onclose = () => {
+                    console.log('Disconnected from the server');
+                };
+
+                ws.onerror = (error) => {
+                    console.error('WebSocket Error:', error);
+                };
+                ws.onmessage = async (event) => {
+                    let x = await JSON.parse(event.data);
+                    if (x['message']) {
+                        if (localStorage['path'] == '/chatting' && localStorage['with'] == x['sender']) {
+                            console.log("Message Sent");
+                            chats = document.getElementById('main').contentDocument.getElementById('chats');
+
+                            const chatDiv = document.createElement('div');
+                            chatDiv.className = 'chat';
+                            const whoDiv = document.createElement('div');
+                            whoDiv.className = 'them';
+                            whoDiv.textContent = x['message'];
+                            chatDiv.appendChild(whoDiv);
+                            chats.prepend(chatDiv);
+                        } else {
+                            showNotification(`new message from ${x['sender']}`)
+                        }
+                    } else {
+                        console.error(x);
+                    }
+                };
+
             });
     </script>
     <link rel="stylesheet" href="home.css">

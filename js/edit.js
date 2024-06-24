@@ -44,7 +44,8 @@ function editor(req, res) {
 		// Send response to client
 		res.send("success");
 		conn.query(
-			`update users set profile='${d}', bio='${bio}' where cookie='${cookie}';`,
+			`update users set profile='${d}', bio=? where cookie='${cookie}';`,
+			[bio],
 		);
 	});
 }

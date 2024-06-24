@@ -49,9 +49,8 @@ function uploader(req, res) {
 			name = name[0]["username"];
 			console.log(name);
 			await conn.query(
-				`insert into ${
-					name + "photo"
-				} (photo, caption) values ('${d}', '${caption}')`,
+				`insert into ${name + "photo"} (photo, caption) values (?, ?)`,
+				[d, caption],
 			);
 		})();
 
