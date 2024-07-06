@@ -19,14 +19,17 @@
           x = JSON.parse(txt);
           p.innerHTML = '';
           x.forEach(element => {
+            if (element['username'] == localStorage['me']) return;
             const userDiv = document.createElement('div');
             userDiv.id = 'user';
 
+            /*
             // Create the a tag
             const link = document.createElement('a');
             link.class = 'link';
             link.href = '/profile?p=' + element['username']; // Replace with your desired URL
             link.innerText = element['username'];
+            */
 
 
             // Append the text divs and image to the main div

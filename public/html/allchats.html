@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>chats</title>
+  <link href="getchatusers.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="users">
+
+  </div>
+  <script>
+    fetch("/getchatusers")
+      .then(res => {
+        return res.json()
+      })
+      .then(txt => {
+        console.log(txt);
+        console.log(typeof (txt));
+        h = document.getElementById("users");
+        txt.forEach((element) => {
+          const userDiv = document.createElement('div');
+          userDiv.class = 'user';
+          // Append the text divs and image to the main div
+          userDiv.innerHTML = "<button class='button' onclick=" + "parent.getPage('/chat','" + element + "')>" + element + "</button>";
+          h.appendChild(userDiv);
+        })
+      });
+  </script>
+</body>
+
+</html>

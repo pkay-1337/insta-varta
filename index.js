@@ -17,6 +17,7 @@ const chat = require("./js/chat");
 const startchat = require("./js/startchat");
 const send = require("./js/send");
 const getchat = require("./js/getchat");
+const getchatusers = require("./js/getchatusers");
 const { app, server } = require("./js/ws");
 //const fs = require("fs").promises;
 //const { exec } = require("child_process");
@@ -63,6 +64,9 @@ app.get("/search", (req, res) => {
 });
 app.get("/user", (req, res) => {
 	get(req, res, "../public/html/user.html");
+});
+app.get("/getchatusers", (req, res) => {
+	getchatusers(req, res);
 });
 app.get("/follow", (req, res) => follow(req, res));
 app.get("/doifollow", (req, res) => doifollow(req, res));

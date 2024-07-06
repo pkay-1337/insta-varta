@@ -120,7 +120,7 @@ let conn;
 function setCookie(name, value, days) {
 	const date = new Date();
 	date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-	return `${name}=${value}; expires=${date.toUTCString()}; path=/; HttpOnly; Secure; SameSite=Strict`;
+	return `${name}=${value}; expires=${date.toUTCString()}; path=/; Secure; SameSite=Strict`;
 }
 
 function createCookie() {
