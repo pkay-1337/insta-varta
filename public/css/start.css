@@ -42,7 +42,7 @@ body {
 
 #uname {
   font-size: larger;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   padding: 10px;
   border: 2px solid white;
   border-collapse: collapse;
@@ -50,12 +50,22 @@ body {
 
 #caption {
   font-size: larger;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   padding: 5px;
   padding-left: 10px;
   border: 2px solid white;
   border-collapse: collapse;
   border-top: 2px solid gray;
+}
+
+.like {
+  background-color: black;
+  color: red;
+}
+
+.liked {
+  background-color: red;
+  color: black;
 }
 
 @media screen and (min-width: 800px) {

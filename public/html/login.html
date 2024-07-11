@@ -1,10 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
+    <script>
+        fetch("/loggedin", {
+            method: "GET",
+        })
+            .then((res) => {
+                return res.text();
+            })
+            .then((txt) => {
+                console.log(txt);
+                if (txt == "yes") window.location.href = window.location.origin;
+            });
+    </script>
 
     <style>
         .notification {
@@ -21,18 +33,18 @@
         }
 
         .notification.success {
-            background-color: #4CAF50;
+            background-color: #4caf50;
         }
 
         .notification.error {
-            background-color: #F44336;
+            background-color: #f44336;
         }
     </style>
 
     <script>
-        function showNotification(message, type = 'success', duration = 3000) {
+        function showNotification(message, type = "success", duration = 3000) {
             // Create notification element
-            const notification = document.createElement('div');
+            const notification = document.createElement("div");
             notification.className = `notification ${type}`;
             notification.textContent = message;
 
@@ -41,12 +53,12 @@
 
             // Trigger animation
             setTimeout(() => {
-                notification.style.top = '20px';
+                notification.style.top = "20px";
             }, 100);
 
             // Remove notification after duration
             setTimeout(() => {
-                notification.style.top = '-100px';
+                notification.style.top = "-100px";
                 setTimeout(() => {
                     document.body.removeChild(notification);
                 }, 500);
@@ -60,70 +72,80 @@
         function con(form) {
             if (form == "reg") {
                 data = {
-                    "username": document.getElementById("userName").value,
-                    "email": document.getElementById("email").value,
-                    "password": document.getElementById("password").value
-                }
-                fetch("/register", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)})
-                    .then((res) => {
-                        res.json()
-                            .then((data) => {
-                                if (data['success'] == 'Registered') {
-                                    what(1);
-                                    showNotification("User Registered");
-                                }
-                                if (data['error']) {
-                                    showNotification(data['error'], 'error')
-                                }
-                            })
-                    })
+                    username: document.getElementById("userName").value,
+                    email: document.getElementById("email").value,
+                    password: document.getElementById("password").value,
+                };
+                fetch("/register", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(data),
+                }).then((res) => {
+                    res.json().then((data) => {
+                        if (data["success"] == "Registered") {
+                            what(1);
+                            showNotification("User Registered");
+                        }
+                        if (data["error"]) {
+                            showNotification(data["error"], "error");
+                        }
+                    });
+                });
             }
             if (form == "log") {
                 data = {
-                    "username": document.getElementById("userName").value,
-                    "password": document.getElementById("password").value
-                }
-                let res = fetch("/login", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(data)});
+                    username: document.getElementById("userName").value,
+                    password: document.getElementById("password").value,
+                };
+                let res = fetch("/login", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(data),
+                });
                 res.then((response) => {
                     let x = response.json();
                     x.then((data) => {
                         console.log(data);
-                        if (data['success'] == "Login Successful") {
-                            showNotification("Logged in")
+                        if (data["success"] == "Login Successful") {
+                            showNotification("Logged in");
                             //localStorage.setItem('xyz',"home");
                             window.location = "/";
                             //alert("logged innnn");
-                        };
-                        if (data['error']) {
+                        }
+                        if (data["error"]) {
                             //localStorage.setItem('xyz',"home");
                             //alert(data["error"]);
-                            showNotification(data['error'], 'error')
-                        };
+                            showNotification(data["error"], "error");
+                        }
                     });
                 });
             }
         }
     </script>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="login.css" />
     <script>
-        let reg = "ICAgICAgICAgICAgPGZvcm0gaWQ9Im15Rm9ybSI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJpbnB1dCI+CgkJCQk8aW5wdXQgdHlwZT0idGV4dCIgbmFtZT0idXNlck5hbWUiIGlkPSJ1c2VyTmFtZSIgcmVxdWlyZWQ+CgkJCQk8bGFiZWwgZm9yPSJ1c2VyTmFtZSI+IHVzZXIgbmFtZSogPC9sYWJlbD4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iaW5wdXQiPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIG5hbWU9ImVtYWlsIiBpZD0iZW1haWwiIHJlcXVpcmVkPgogICAgICAgICAgICAgICAgPGxhYmVsIGZvcj0iZW1haWwiPiBFbWFpbCogPC9sYWJlbD4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iaW5wdXQiPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InBhc3N3b3JkIiBuYW1lPSJwYXNzd29yZCIgaWQ9InBhc3N3b3JkIiByZXF1aXJlZD4KICAgICAgICAgICAgICAgIDxsYWJlbCBmb3I9InBhc3MiID4gUGFzc3dvcmQqIDwvbGFiZWw+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxidXR0b24gdHlwZT0ic3VibWl0IiBvbmNsaWNrPSJjb24oJ3JlZycpIiBpZD0iYnV0Ij5SRUdJU1RFUjwvYnV0dG9uPgogICAgICAgICAgICA8L2Zvcm0+";
-        let log = "ICAgICAgICAgICAgPGZvcm0gaWQ9Im15Rm9ybSI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJpbnB1dCI+CgkJCQk8aW5wdXQgdHlwZT0idGV4dCIgbmFtZT0idXNlck5hbWUiIGlkPSJ1c2VyTmFtZSIgcmVxdWlyZWQ+CgkJCQk8bGFiZWwgZm9yPSJ1c2VyTmFtZSI+IGVtYWlsIC8gdXNlcm5hbWUqIDwvbGFiZWw+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImlucHV0Ij4KICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJwYXNzd29yZCIgbmFtZT0icGFzc3dvcmQiIGlkPSJwYXNzd29yZCIgcmVxdWlyZWQ+CiAgICAgICAgICAgICAgICA8bGFiZWwgZm9yPSJwYXNzIj4gUGFzc3dvcmQqIDwvbGFiZWw+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxidXR0b24gdHlwZT0ic3VibWl0IiBvbmNsaWNrPSJjb24oJ2xvZycpIiBpZD0iYnV0Ij5MT0dJTjwvYnV0dG9uPgogICAgICAgICAgICA8L2Zvcm0+";
+        let reg =
+            "ICAgICAgICAgICAgPGZvcm0gaWQ9Im15Rm9ybSI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJpbnB1dCI+CgkJCQk8aW5wdXQgdHlwZT0idGV4dCIgbmFtZT0idXNlck5hbWUiIGlkPSJ1c2VyTmFtZSIgcmVxdWlyZWQ+CgkJCQk8bGFiZWwgZm9yPSJ1c2VyTmFtZSI+IHVzZXIgbmFtZSogPC9sYWJlbD4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iaW5wdXQiPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIG5hbWU9ImVtYWlsIiBpZD0iZW1haWwiIHJlcXVpcmVkPgogICAgICAgICAgICAgICAgPGxhYmVsIGZvcj0iZW1haWwiPiBFbWFpbCogPC9sYWJlbD4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iaW5wdXQiPgogICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9InBhc3N3b3JkIiBuYW1lPSJwYXNzd29yZCIgaWQ9InBhc3N3b3JkIiByZXF1aXJlZD4KICAgICAgICAgICAgICAgIDxsYWJlbCBmb3I9InBhc3MiID4gUGFzc3dvcmQqIDwvbGFiZWw+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxidXR0b24gdHlwZT0ic3VibWl0IiBvbmNsaWNrPSJjb24oJ3JlZycpIiBpZD0iYnV0Ij5SRUdJU1RFUjwvYnV0dG9uPgogICAgICAgICAgICA8L2Zvcm0+";
+        let log =
+            "ICAgICAgICAgICAgPGZvcm0gaWQ9Im15Rm9ybSI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJpbnB1dCI+CgkJCQk8aW5wdXQgdHlwZT0idGV4dCIgbmFtZT0idXNlck5hbWUiIGlkPSJ1c2VyTmFtZSIgcmVxdWlyZWQ+CgkJCQk8bGFiZWwgZm9yPSJ1c2VyTmFtZSI+IGVtYWlsIC8gdXNlcm5hbWUqIDwvbGFiZWw+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImlucHV0Ij4KICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPSJwYXNzd29yZCIgbmFtZT0icGFzc3dvcmQiIGlkPSJwYXNzd29yZCIgcmVxdWlyZWQ+CiAgICAgICAgICAgICAgICA8bGFiZWwgZm9yPSJwYXNzIj4gUGFzc3dvcmQqIDwvbGFiZWw+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxidXR0b24gdHlwZT0ic3VibWl0IiBvbmNsaWNrPSJjb24oJ2xvZycpIiBpZD0iYnV0Ij5MT0dJTjwvYnV0dG9uPgogICAgICAgICAgICA8L2Zvcm0+";
         function what(x) {
             let a = document.getElementById("magic");
             if (x == 0) {
                 document.getElementById("h").innerText = "REGISTER";
                 a.innerHTML = atob(reg);
-                const script = document.createElement('script');
-                script.textContent = "document.getElementById('myForm').addEventListener('submit', function(event) {event.preventDefault();})";
+                const script = document.createElement("script");
+                script.textContent =
+                    "document.getElementById('myForm').addEventListener('submit', function(event) {event.preventDefault();})";
                 a.appendChild(script);
             } else {
                 document.getElementById("h").innerText = "LOGIN";
                 a.innerHTML = atob(log);
-                const script = document.createElement('script');
-                script.textContent = "document.getElementById('myForm').addEventListener('submit', function(event) {event.preventDefault();})";
+                const script = document.createElement("script");
+                script.textContent =
+                    "document.getElementById('myForm').addEventListener('submit', function(event) {event.preventDefault();})";
                 a.appendChild(script);
             }
-        };
+        }
     </script>
     <h1 id="h">LOGIN / REGISTER</h1>
     <div id="container">
@@ -131,8 +153,7 @@
             <button onclick="what(0)" class="but2">Register</button>
             <button onclick="what(1)" class="but2">Login</button>
         </div>
-        <div id="magic">
-        </div>
+        <div id="magic"></div>
     </div>
 </body>
 

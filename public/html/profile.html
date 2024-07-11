@@ -1,46 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>profile</title>
-    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="profile.css" />
+    <script>
+        async function logout() {
+            fetch("/logout", {
+                method: "GET",
+            })
+                .then((res) => {
+                    return res.text();
+                })
+                .then((txt) => {
+                    if (txt == "ok") {
+                        window.parent.location.href = window.location.href;
+                    }
+                });
+        }
+    </script>
 </head>
 
 <body>
     <div id="head">
-        <img src="/profilePic" alt="Profile Photo" id="profilephoto">
+        <img src="/profilePic" alt="Profile Photo" id="profilephoto" />
         <div id="details">
             <div id="nameedit">
                 <div id="name"></div>
-                <button id="editprofile" onclick="console.log(parent.getPage('/edit'))">Edit</button>
+                <button id="editprofile" onclick="console.log(parent.getPage('/edit'))">
+                    Edit
+                </button>
+                <button id="logout" onclick="logout()" style="
+              background-color: black;
+              color: red;
+              border-bottom: 1px solid white;
+            ">
+                    logout
+                </button>
             </div>
             <div id="bio"></div>
         </div>
     </div>
     <div id="photos"></div>
     <script>
-        fetch("/", {method: "GET", headers: {"Get": "username"}})
-            .then(res => {
-                return res.text()
+        fetch("/", {method: "GET", headers: {Get: "username"}})
+            .then((res) => {
+                return res.text();
             })
-            .then(txt => {
+            .then((txt) => {
                 h = document.getElementById("name");
                 data = h.innerHTML + " " + txt;
                 h.innerHTML = data;
             });
 
-        fetch("/", {method: "GET", headers: {"Get": "bio"}})
-            .then(res => {
-                return res.text()
+        fetch("/", {method: "GET", headers: {Get: "bio"}})
+            .then((res) => {
+                return res.text();
             })
-            .then(txt => {
+            .then((txt) => {
                 b = document.getElementById("bio");
                 b.innerHTML = txt;
             });
 
-        var photosContainer = document.getElementById('photos');
+        var photosContainer = document.getElementById("photos");
         var photos = [];
         var currentBatch = 0;
         var batchSize = 10;
@@ -50,28 +74,52 @@
                 const element = photos[i];
                 if (!element) break;
 
-                const photoDiv = document.createElement('div');
-                photoDiv.id = 'post';
+                const photoDiv = document.createElement("div");
+                photoDiv.id = "post";
+                photoDiv.className = element["photo"];
+                //photoDiv.id = "post" + element["photo"];
 
                 // Create the first text div
-                const textDiv1 = document.createElement('div');
-                textDiv1.id = 'uname';
-                textDiv1.textContent = element['name'];
+                const textDiv1 = document.createElement("div");
+                textDiv1.id = "uname";
+                textDiv1.textContent = element["name"];
 
                 // Create the image tag
-                const image = document.createElement('img');
-                image.id = 'photo';
-                image.src = '/photo?p=' + element['photo']; // Replace with your desired URL
-                image.alt = 'Photo';
+                const image = document.createElement("img");
+                image.id = "photo";
+                image.src = "/photo?p=" + element["photo"]; // Replace with your desired URL
+                image.alt = "Photo";
 
+                var button = document.createElement("button");
+                button.className = "delete";
+                button.innerHTML = "DELETE";
+                //button.id = element["photo"];
+
+                // Set the onclick attribute
+                button.onclick = function () {
+                    fetch("/delete", {
+                        method: "GET",
+                        headers: {photo: element["photo"], user: element["name"]},
+                    })
+                        .then((res) => {
+                            return res.text();
+                        })
+                        .then((txt) => {
+                            if (txt == "ok") {
+                                h = document.getElementsByClassName(element["photo"])[0];
+                                h.remove();
+                            }
+                        });
+                };
                 // Create the second text div
-                const textDiv2 = document.createElement('div');
-                textDiv2.id = 'caption';
-                textDiv2.textContent = element['caption'];
+                const textDiv2 = document.createElement("div");
+                textDiv2.id = "caption";
+                textDiv2.textContent = element["caption"];
 
                 // Append the text divs to the main div
                 photoDiv.appendChild(textDiv1);
                 photoDiv.appendChild(image);
+                photoDiv.appendChild(button);
                 photoDiv.appendChild(textDiv2);
 
                 // Append the main div to the container
@@ -85,11 +133,15 @@
         }
 
         function loadMorePhotos(entries, observer) {
-            entries.forEach(entry => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     observer.unobserve(entry.target); // Unobserve the current target
                     currentBatch += batchSize;
-                    addPhotosSequentially(photos, currentBatch, currentBatch + batchSize).then(() => {
+                    addPhotosSequentially(
+                        photos,
+                        currentBatch,
+                        currentBatch + batchSize,
+                    ).then(() => {
                         // Observe the new last photo
                         const lastPhoto = photosContainer.lastElementChild;
                         if (lastPhoto) {
@@ -101,17 +153,19 @@
         }
 
         fetch("/myphotos")
-            .then(res => {
-                return res.text()
+            .then((res) => {
+                return res.text();
             })
-            .then(txt => {
+            .then((txt) => {
                 photos = JSON.parse(txt);
                 photos = photos.sort((a, b) => b.photo - a.photo);
                 addPhotosSequentially(photos, 0, batchSize).then(() => {
                     // Observe the last photo after the first batch is loaded
                     const lastPhoto = photosContainer.lastElementChild;
                     if (lastPhoto) {
-                        const observer = new IntersectionObserver(loadMorePhotos, {threshold: 1.0});
+                        const observer = new IntersectionObserver(loadMorePhotos, {
+                            threshold: 1.0,
+                        });
                         observer.observe(lastPhoto);
                     }
                 });

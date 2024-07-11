@@ -1,63 +1,58 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Insta-Varta</title>
   <style>
     #photos>div {
       margin-bottom: 20px;
     }
   </style>
-  <link href="/start.css" rel="stylesheet">
+  <link href="/start.css" rel="stylesheet" />
+  <script>
+    fetch("/likes", {
+      method: "GET",
+    })
+      .then((res) => {
+        return res.text();
+      })
+      .then((txt) => {
+        //console.log(txt);
+        localStorage["likes"] = txt.split(" ");
+      });
+    function like(variable) {
+      console.log("Like button clicked! Variable value: " + variable);
+
+      fetch("/like", {
+        method: "GET",
+        headers: {photo: variable},
+      })
+        .then((res) => {
+          return res.text();
+        })
+        .then((txt) => {
+          h = document.getElementById(variable);
+          if (txt == "yes") {
+            h.innerHTML = "Liked";
+            h.style.backgroundColor = "red";
+            h.style.color = "black";
+          } else {
+            h.innerHTML = "Like";
+            h.style.backgroundColor = "black";
+            h.style.color = "red";
+          }
+        });
+    }
+  </script>
 </head>
 
 <body>
   <div id="photos"></div>
+
   <script>
-    /*
-    fetch("/photos")
-      .then(res => {
-        return res.text()
-      })
-      .then(txt => {
-        p = document.getElementById("photos");
-        x = JSON.parse(txt);
-        x = x.sort((a, b) => a.photo - b.photo)
-        x.forEach(element => {
-          const photoDiv = document.createElement('div');
-          photoDiv.id = 'post';
-
-          // Create the first text div
-          const textDiv1 = document.createElement('div');
-          textDiv1.id = 'uname';
-          textDiv1.textContent = element['name'];
-
-          // Create the image tag
-          const image = document.createElement('img');
-          image.id = 'photo';
-          image.src = '/photo?p=' + element['photo']; // Replace with your desired URL
-          image.alt = 'Photo';
-
-          // Create the second text div
-          const textDiv2 = document.createElement('div');
-          textDiv2.id = 'caption';
-          textDiv2.textContent = element['caption'];
-
-          // Append the text divs and image to the main div
-          photoDiv.appendChild(textDiv1);
-          photoDiv.appendChild(image);
-          photoDiv.appendChild(textDiv2);
-
-          // Append the main div to the body or another container element
-          p.appendChild(photoDiv);
-        });
-        console.log(x);
-      })
-    */
-
-    var photosContainer = document.getElementById('photos');
+    var photosContainer = document.getElementById("photos");
     var photos = [];
     var currentBatch = 0;
     var batchSize = 10;
@@ -67,28 +62,44 @@
         const element = photos[i];
         if (!element) break;
 
-        const photoDiv = document.createElement('div');
-        photoDiv.id = 'post';
+        const photoDiv = document.createElement("div");
+        photoDiv.id = "post";
 
         // Create the first text div
-        const textDiv1 = document.createElement('div');
-        textDiv1.id = 'uname';
-        textDiv1.textContent = element['name'];
+        const textDiv1 = document.createElement("div");
+        textDiv1.id = "uname";
+        textDiv1.textContent = element["name"];
 
         // Create the image tag
-        const image = document.createElement('img');
-        image.id = 'photo';
-        image.src = '/photo?p=' + element['photo']; // Replace with your desired URL
-        image.alt = 'Photo';
+        const image = document.createElement("img");
+        image.id = "photo";
+        image.src = "/photo?p=" + element["photo"]; // Replace with your desired URL
+        image.alt = "Photo";
+
+        var button = document.createElement("button");
+        if (localStorage["likes"].includes(element["photo"])) {
+          button.className = "liked";
+          button.innerHTML = "Liked";
+        } else {
+          button.className = "like";
+          button.innerHTML = "Like";
+        }
+        button.id = element["photo"];
+
+        // Set the onclick attribute
+        button.onclick = function () {
+          like(element["photo"]);
+        };
 
         // Create the second text div
-        const textDiv2 = document.createElement('div');
-        textDiv2.id = 'caption';
-        textDiv2.textContent = element['caption'];
+        const textDiv2 = document.createElement("div");
+        textDiv2.id = "caption";
+        textDiv2.textContent = element["caption"];
 
         // Append the text divs to the main div
         photoDiv.appendChild(textDiv1);
         photoDiv.appendChild(image);
+        photoDiv.appendChild(button);
         photoDiv.appendChild(textDiv2);
 
         // Append the main div to the container
@@ -102,11 +113,15 @@
     }
 
     function loadMorePhotos(entries, observer) {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           observer.unobserve(entry.target); // Unobserve the current target
           currentBatch += batchSize;
-          addPhotosSequentially(photos, currentBatch, currentBatch + batchSize).then(() => {
+          addPhotosSequentially(
+            photos,
+            currentBatch,
+            currentBatch + batchSize,
+          ).then(() => {
             // Observe the new last photo
             const lastPhoto = photosContainer.lastElementChild;
             if (lastPhoto) {
@@ -118,22 +133,22 @@
     }
 
     fetch("/photos")
-      .then(res => res.text())
-      .then(txt => {
+      .then((res) => res.text())
+      .then((txt) => {
         photos = JSON.parse(txt);
         photos = photos.sort((a, b) => b.photo - a.photo);
         addPhotosSequentially(photos, 0, batchSize).then(() => {
           // Observe the last photo after the first batch is loaded
           const lastPhoto = photosContainer.lastElementChild;
           if (lastPhoto) {
-            const observer = new IntersectionObserver(loadMorePhotos, {threshold: 1.0});
+            const observer = new IntersectionObserver(loadMorePhotos, {
+              threshold: 1.0,
+            });
             observer.observe(lastPhoto);
           }
         });
       });
   </script>
-
 </body>
-
 
 </html>
