@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en" style="width: 100%; height: 100%;">
+<!doctype html>
+<html lang="en" style="width: 100%; height: 100%">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image Crop and Form</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
     <style>
         body {
             width: 95%;
@@ -18,8 +18,6 @@
 
         #userForm {
             margin: 2%;
-            border: 1px white solid;
-            border-radius: 10px;
             display: flex;
             flex-direction: column;
             justify-content: space-around;
@@ -56,7 +54,6 @@
             margin-top: 20px;
             padding: 10px 20px;
             margin-bottom: 2.5%;
-
         }
 
         #imageInput {
@@ -73,15 +70,20 @@
 </head>
 
 <body>
-
-    <div style="width: 90%;">
+    <div style="width: 90%">
         <form id="userForm" enctype="multipart/form-data" action="/edit" method="POST">
-            <h2 style="color: white; margin-bottom: 5%; border-bottom: 2px solid white ;">Edit Profile Details</h2>
-            <input type="file" id="imageInput" accept="image/*">
-            <div class="img-container" style="width: 50%;">
-                <img id="image" style="max-width: 100%;">
+            <h2 style="
+            color: white;
+            margin-bottom: 5%;
+            border-bottom: 2px solid white;
+          ">
+                Edit Profile Details
+            </h2>
+            <input type="file" id="imageInput" accept="image/*" />
+            <div class="img-container" style="width: 50%">
+                <img id="image" style="max-width: 100%" />
             </div>
-            <div class="img-preview" style="min-height: 0px;"></div>
+            <div class="img-preview" style="min-height: 0px"></div>
             <textarea id="bio" name="bio" rows="4" placeholder="Enter your bio here"></textarea>
             <button type="submit" id="submitBtn">Submit</button>
         </form>
@@ -90,11 +92,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script>
         var cropper;
-        var imageInput = document.getElementById('imageInput');
-        var image = document.getElementById('image');
-        var form = document.getElementById('userForm');
+        var imageInput = document.getElementById("imageInput");
+        var image = document.getElementById("image");
+        var form = document.getElementById("userForm");
 
-        imageInput.addEventListener('change', function (event) {
+        imageInput.addEventListener("change", function (event) {
             const files = event.target.files;
             if (files && files.length > 0) {
                 const file = files[0];
@@ -106,35 +108,36 @@
                 cropper = new Cropper(image, {
                     aspectRatio: 4 / 5,
                     viewMode: 3,
-                    preview: '.img-preview'
+                    preview: ".img-preview",
                 });
             }
         });
 
-        form.addEventListener('submit', function (event) {
+        form.addEventListener("submit", function (event) {
             event.preventDefault();
             if (cropper) {
                 cropper.getCroppedCanvas().toBlob((blob) => {
                     const formData = new FormData(form);
-                    formData.append('croppedImage', blob);
+                    formData.append("croppedImage", blob);
                     // Now you can submit the formData via AJAX or any other method
                     // Example using fetch:
-                    fetch('/edit', {
-                        method: 'POST',
-                        body: formData
-                    }).then(response => {
-                        // Handle the response
-                        console.log('Success:', response);
-                        parent.getPage('/profile');
-                    }).catch(error => {
-                        // Handle the error
-                        console.error('Error:', error);
-                    });
+                    fetch("/edit", {
+                        method: "POST",
+                        body: formData,
+                    })
+                        .then((response) => {
+                            // Handle the response
+                            console.log("Success:", response);
+                            parent.getPage("/profile");
+                        })
+                        .catch((error) => {
+                            // Handle the error
+                            console.error("Error:", error);
+                        });
                 });
             }
         });
     </script>
-
 </body>
 
 </html>
